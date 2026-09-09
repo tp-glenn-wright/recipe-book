@@ -155,6 +155,9 @@ openButton?.addEventListener('click', () => {
   current = firstUndone === -1 ? 0 : firstUndone;
   renderStep();
   dialog.showModal();
+  // A modal dialog focuses its first focusable child, which here is Done. Enter would
+  // then close cook mode rather than advance it, so move focus to Next.
+  nextButton?.focus();
   acquireWakeLock();
 });
 
