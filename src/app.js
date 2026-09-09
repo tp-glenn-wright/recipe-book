@@ -178,6 +178,16 @@ function showFacets(show) {
 
 /* ---------- wiring ---------- */
 
+/* The search field is a real GET form so it works on a recipe page without script.
+ * Here on the index, script is running and filtering happens live, so submitting would
+ * only reload the page we are already on. */
+document.querySelector('.search-form')?.addEventListener('submit', (event) => {
+  event.preventDefault();
+  state.text = normalise(input.value.trim());
+  apply();
+  input.blur();
+});
+
 let debounce = null;
 input?.addEventListener('input', () => {
   clearTimeout(debounce);

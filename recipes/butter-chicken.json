@@ -1,0 +1,62 @@
+{
+  "schemaVersion": 1,
+  "id": "butter-chicken",
+  "title": "Butter Chicken",
+  "description": "Butter chicken with no butter in it: evaporated light milk and cooking spray stand in, which keeps the saturated fat under 2 g a serve. It is thinner and sharper than a restaurant version, so lean on the paprika and cinnamon.",
+  "image": null,
+  "source": { "kind": "photo", "citation": null, "url": null },
+  "added": "2026-09-09",
+  "updated": "2026-09-09",
+  "cuisine": "Indian",
+  "course": ["main", "dinner"],
+  "mainProtein": "chicken",
+  "tags": ["weeknight", "high-protein", "kids", "stovetop"],
+  "rating": null,
+  "difficulty": "easy",
+  "prepMinutes": 15,
+  "cookMinutes": 20,
+  "totalMinutes": 35,
+  "servings": 6,
+  "servingSizeG": 220,
+  "equipment": ["large non-stick frying pan or wok"],
+  "ingredients": [
+    {
+      "group": null,
+      "items": [
+        { "quantity": 800, "unit": "g", "item": "skinless chicken breasts", "note": "cut into bite sized pieces", "raw": "800 g skinless chicken breasts" },
+        { "quantity": null, "unit": null, "item": "cooking spray", "note": null, "raw": "cooking spray" },
+        { "quantity": 1, "unit": null, "item": "medium onion", "note": "diced", "raw": "1 medium sized onion diced" },
+        { "quantity": 1, "unit": "tsp", "item": "crushed garlic", "note": "from a jar", "raw": "1 teaspoon crushed garlic (in jar)" },
+        { "quantity": 0.5, "unit": "tsp", "item": "crushed ginger", "note": "from a jar", "raw": "1/2 teaspoon crushed ginger (in jar)" },
+        { "quantity": 1, "unit": "tsp", "item": "ground cinnamon", "note": null, "raw": "1 teaspoon cinnamon" },
+        { "quantity": 1, "unit": "tsp", "item": "ground turmeric", "note": null, "raw": "1 teaspoon turmeric" },
+        { "quantity": 1, "unit": "tsp", "item": "ground coriander", "note": null, "raw": "1 teaspoon dried coriander" },
+        { "quantity": 2, "unit": "tsp", "item": "paprika", "note": null, "raw": "2 teaspoons paprika" },
+        { "quantity": 0.5, "unit": "tsp", "item": "ground cumin", "note": null, "raw": "1/2 teaspoon cumin" },
+        { "quantity": 0.125, "unit": "tsp", "item": "chilli powder", "note": null, "raw": "1/8 teaspoon chilli powder" },
+        { "quantity": 2, "unit": "tsp", "item": "chicken stock powder", "note": null, "raw": "2 teaspoons chicken stock powder" },
+        { "quantity": 4, "unit": "tbsp", "item": "tomato paste", "note": "no added salt", "raw": "4 tablespoons no added salt tomato paste" },
+        { "quantity": 1, "unit": "tbsp", "item": "cornflour", "note": null, "raw": "1 tablespoon cornflour" },
+        { "quantity": 375, "unit": "ml", "item": "evaporated light milk", "note": null, "raw": "1 x 375 ml can evaporated light milk" }
+      ]
+    }
+  ],
+  "steps": [
+    { "text": "Cut the chicken into bite sized pieces.", "minutes": null },
+    { "text": "Coat a large non-stick frying pan or wok with cooking spray and saute the chicken, onion, garlic and ginger until the chicken is nearly cooked.", "minutes": 8 },
+    { "text": "Add all the spices and the stock powder and combine with the chicken for one minute.", "minutes": 1 },
+    { "text": "Add the tomato paste and fold it through the chicken.", "minutes": 2 },
+    { "text": "Blend the cornflour with the evaporated milk, add it to the pan and stir continuously, mixing well, until it comes to the boil and thickens.", "minutes": 5 }
+  ],
+  "notes": [
+    "The source offers lean rump steak, butterfly pork steak or 600 g tofu in place of the chicken.",
+    "Cornflour and evaporated milk both dislike a hard boil. Keep stirring and take it off the heat as soon as it thickens.",
+    "There is no chilli heat to speak of at an eighth of a teaspoon. Take it up if you want it to bite."
+  ],
+  "nutrition": {
+    "source": "label",
+    "assumptions": "Read off the printed panel, chicken column. Serving size of 220 g is worked out from the ingredient masses, roughly 1.43 kg reducing about 8% over six servings, since the page does not state it; the per-100 g column is derived from that. The panel notes the GI rating is unavailable because the carbohydrate content is too low to rate.",
+    "perServing": { "kj": 951, "kcal": 226, "proteinG": 36.5, "fatG": 4.5, "saturatedFatG": 1.6, "carbsG": 12.3, "sugarsG": 9.1, "fibreG": 0.4, "sodiumMg": 386 },
+    "per100g": { "kj": 432, "kcal": 102.7, "proteinG": 16.6, "fatG": 2.05, "saturatedFatG": 0.73, "carbsG": 5.6, "sugarsG": 4.14, "fibreG": 0.18, "sodiumMg": 175 }
+  }
+}

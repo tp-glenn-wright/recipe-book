@@ -1,0 +1,63 @@
+{
+  "schemaVersion": 1,
+  "id": "thai-chicken-stir-fry",
+  "title": "Thai Chicken Stir-Fry",
+  "description": "A vegetable-heavy stir fry sweetened and heated by a third of a cup of chilli jam. The jam is the whole seasoning, so taste it before you buy: brands run from mild to fierce.",
+  "image": null,
+  "source": { "kind": "photo", "citation": null, "url": null },
+  "added": "2026-09-09",
+  "updated": "2026-09-09",
+  "cuisine": "Thai",
+  "course": ["main", "dinner"],
+  "mainProtein": "chicken",
+  "tags": ["quick", "weeknight", "high-protein", "stovetop"],
+  "rating": null,
+  "difficulty": "easy",
+  "prepMinutes": 20,
+  "cookMinutes": 15,
+  "totalMinutes": 35,
+  "servings": 4,
+  "servingSizeG": 355,
+  "equipment": ["non-stick frying pan or wok"],
+  "ingredients": [
+    {
+      "group": null,
+      "items": [
+        { "quantity": 500, "unit": "g", "item": "skinless chicken breasts", "note": "cut into bite sized pieces", "raw": "500 g skinless chicken breasts" },
+        { "quantity": null, "unit": null, "item": "cooking spray", "note": null, "raw": "cooking spray" },
+        { "quantity": 1, "unit": "tsp", "item": "crushed garlic", "note": "from a jar", "raw": "1 teaspoon crushed garlic (in jar)" },
+        { "quantity": 1, "unit": "tsp", "item": "crushed ginger", "note": "from a jar", "raw": "1 teaspoon crushed ginger (in jar)" },
+        { "quantity": 250, "unit": "ml", "item": "water", "note": "half goes in with the vegetables, half with the cornflour", "raw": "1 cup water" },
+        { "quantity": 1.5, "unit": "cup", "item": "carrots", "note": "sliced", "raw": "1 1/2 cups carrots sliced" },
+        { "quantity": 1.5, "unit": "cup", "item": "small broccoli florets", "note": null, "raw": "1 1/2 cups small broccoli florets" },
+        { "quantity": 1, "unit": "cup", "item": "onion", "note": "diced", "raw": "1 cup onion diced" },
+        { "quantity": 1, "unit": "cup", "item": "sugar snaps or snow peas", "note": null, "raw": "1 cup sugar snaps or snow peas" },
+        { "quantity": 2, "unit": "cup", "item": "silverbeet or spinach", "note": "sliced", "raw": "2 cups silverbeet/spinach sliced" },
+        { "quantity": 90, "unit": "g", "item": "Thai chilli jam", "note": "from a jar", "raw": "1/3 cup Thai chilli jam (in jar)" },
+        { "quantity": 2, "unit": "tsp", "item": "lemongrass", "note": "from a jar", "raw": "2 teaspoons lemon grass (in jar)" },
+        { "quantity": 1, "unit": "tbsp", "item": "soy sauce", "note": "43% less salt", "raw": "1 tablespoon soy sauce 43% less salt" },
+        { "quantity": 2, "unit": "tsp", "item": "chicken-style stock powder", "note": "salt reduced, Massel or similar", "raw": "2 teaspoons salt reduced chicken-style stock powder (Massel)" },
+        { "quantity": 2, "unit": "tbsp", "item": "cornflour", "note": null, "raw": "2 tablespoons cornflour" }
+      ]
+    }
+  ],
+  "steps": [
+    { "text": "Cut the chicken into bite sized pieces.", "minutes": null },
+    { "text": "Coat a non-stick frying pan or wok with cooking spray and saute the garlic, ginger and chicken for 3 minutes.", "minutes": 3 },
+    { "text": "Add half a cup of the water with the carrots, broccoli and onion, and cook for 3 minutes.", "minutes": 3 },
+    { "text": "Add the sugar snaps and silverbeet and cook for 3 minutes, or until the vegetables are done to your liking.", "minutes": 3 },
+    { "text": "Add the chilli jam, lemongrass, soy sauce and stock powder.", "minutes": null },
+    { "text": "Combine the cornflour with the remaining water, add it to the pan and stir continuously until the sauce has boiled and thickened.", "minutes": 4 }
+  ],
+  "notes": [
+    "The source offers lean rump steak, butterfly pork steak, lean lamb leg steaks or 400 g tofu in place of the chicken, all diced.",
+    "Chilli jam brands vary enormously in heat and sugar. Taste yours before committing a third of a cup.",
+    "Sodium is around 546 mg a serve even with the reduced salt soy and stock powder, because the chilli jam carries salt too."
+  ],
+  "nutrition": {
+    "source": "label",
+    "assumptions": "Read off the printed panel, chicken column, which gives every field. Serving size of 355 g is worked out from the ingredient masses, roughly 1.58 kg reducing about 10% over four servings, and excludes any rice or noodles; the per-100 g column is derived from that.",
+    "perServing": { "kj": 990, "kcal": 236, "proteinG": 32.6, "fatG": 5.1, "saturatedFatG": 1.1, "carbsG": 14.5, "sugarsG": 9.6, "fibreG": 4.2, "sodiumMg": 546 },
+    "per100g": { "kj": 279, "kcal": 66.5, "proteinG": 9.2, "fatG": 1.44, "saturatedFatG": 0.31, "carbsG": 4.1, "sugarsG": 2.7, "fibreG": 1.18, "sodiumMg": 154 }
+  }
+}

@@ -1,0 +1,75 @@
+{
+  "schemaVersion": 1,
+  "id": "creamy-chicken-crumble",
+  "title": "Creamy Chicken Crumble",
+  "description": "A chicken casserole under a savoury crumble of breadcrumbs, parmesan and crushed Weet-Bix. It leans on packet soup and sauce sachets for the creaminess, which is where most of the flavour and all of the sodium comes from.",
+  "image": null,
+  "source": { "kind": "photo", "citation": null, "url": null },
+  "added": "2026-09-09",
+  "updated": "2026-09-09",
+  "cuisine": "Australian",
+  "course": ["main", "dinner"],
+  "mainProtein": "chicken",
+  "tags": ["make-ahead", "comfort-food", "oven", "kids"],
+  "rating": null,
+  "difficulty": "easy",
+  "prepMinutes": 25,
+  "cookMinutes": 55,
+  "totalMinutes": 80,
+  "servings": 6,
+  "servingSizeG": 250,
+  "equipment": ["large saucepan", "large casserole or lasagne dish", "microwave"],
+  "ingredients": [
+    {
+      "group": "Filling",
+      "items": [
+        { "quantity": 1, "unit": "cup", "item": "carrots", "note": "diced", "raw": "1 cup carrots diced" },
+        { "quantity": 1, "unit": "cup", "item": "green beans", "note": "sliced", "raw": "1 cup green beans sliced" },
+        { "quantity": null, "unit": null, "item": "cooking spray", "note": null, "raw": "cooking spray" },
+        { "quantity": 500, "unit": "g", "item": "raw skinless chicken breast", "note": "diced", "raw": "500 g raw skinless chicken breast diced" },
+        { "quantity": 1, "unit": "tsp", "item": "crushed garlic", "note": "from a jar", "raw": "1 teaspoon crushed garlic (in jar)" },
+        { "quantity": 1, "unit": null, "item": "onion", "note": "diced", "raw": "1 onion diced" },
+        { "quantity": 310, "unit": "g", "item": "creamed corn", "note": null, "raw": "1 x 310 g can creamed corn" },
+        { "quantity": 1, "unit": "packet", "item": "chicken and vegetable instant soup mix", "note": "98% fat free Cup-a-Soup or similar", "raw": "1 sachet 98% fat-free chicken & vegetable Cup-a-Soup" },
+        { "quantity": 1, "unit": "tsp", "item": "chicken-style stock powder", "note": "salt reduced", "raw": "1 teaspoon salt-reduced chicken-style stock powder" },
+        { "quantity": 1, "unit": "tbsp", "item": "fresh parsley", "note": "chopped", "raw": "1 tablespoon fresh parsley chopped" },
+        { "quantity": 30, "unit": "g", "item": "four cheese sauce mix", "note": "Continental or similar", "raw": "1 x 30 g sachet 4 cheese sauce (Continental)" },
+        { "quantity": 250, "unit": "ml", "item": "boiling water", "note": null, "raw": "1 cup boiling water" }
+      ]
+    },
+    {
+      "group": "Crumble",
+      "items": [
+        { "quantity": 0.5, "unit": "cup", "item": "dried breadcrumbs", "note": null, "raw": "1/2 cup dried breadcrumbs" },
+        { "quantity": 75, "unit": "g", "item": "plain flour", "note": null, "raw": "1/2 cup plain flour" },
+        { "quantity": 2, "unit": "tbsp", "item": "parmesan cheese", "note": "grated", "raw": "2 tablespoons grated parmesan cheese" },
+        { "quantity": 1, "unit": "tbsp", "item": "fresh parsley", "note": "chopped", "raw": "1 tablespoon fresh parsley chopped" },
+        { "quantity": 2, "unit": null, "item": "Weet-Bix", "note": "crushed", "raw": "2 Weet-bix crushed" },
+        { "quantity": 2, "unit": "tbsp", "item": "skim milk", "note": null, "raw": "2 tablespoons skim milk" },
+        { "quantity": 60, "unit": "g", "item": "light margarine", "note": "melted, Flora Light or similar", "raw": "4 tablespoons (60 g) Flora Light margarine melted" }
+      ]
+    }
+  ],
+  "steps": [
+    { "text": "Heat the oven to 180 C fan forced.", "minutes": null },
+    { "text": "Microwave the carrots and beans in a little water on high for 5 minutes.", "minutes": 5 },
+    { "text": "Coat a large saucepan generously with cooking spray and saute the chicken with the garlic for 3 minutes.", "minutes": 3 },
+    { "text": "Add the onion and cook for 2 minutes.", "minutes": 2 },
+    { "text": "Add the creamed corn, soup mix, stock powder and parsley.", "minutes": null },
+    { "text": "Blend the cheese sauce sachet with the cup of boiling water, add it to the pot and combine well.", "minutes": 2 },
+    { "text": "Pour the filling into a large casserole or lasagne dish.", "minutes": null },
+    { "text": "Combine all the crumble ingredients, using your hands to work it to a crumbled texture, and sprinkle it evenly over the filling.", "minutes": 5 },
+    { "text": "Bake for 40 to 45 minutes, until the crumble is browned.", "minutes": 45 }
+  ],
+  "notes": [
+    "The source offers two 425 g cans of tuna in spring water, drained, in place of the chicken.",
+    "Assembles a day ahead and bakes from the fridge, which is most of the appeal of a crumble like this. Add ten minutes if it goes in cold.",
+    "The crumble will not clump unless you use your hands. A spoon just moves it around."
+  ],
+  "nutrition": {
+    "source": "label",
+    "assumptions": "Read off the printed panel, chicken column, which gives every field. Serving size of 250 g is worked out from the ingredient masses, roughly 1.79 kg losing about 15% in a 45 minute uncovered bake over six servings, since the page does not state it; the per-100 g column is derived from that. Packet soup, sauce sachet and stock powder brands vary, and they carry nearly all the sodium.",
+    "perServing": { "kj": 1223, "kcal": 291, "proteinG": 25.1, "fatG": 8.7, "saturatedFatG": 2.1, "carbsG": 28.1, "sugarsG": 5.4, "fibreG": 5.2, "sodiumMg": 458 },
+    "per100g": { "kj": 489, "kcal": 116.4, "proteinG": 10, "fatG": 3.5, "saturatedFatG": 0.84, "carbsG": 11.2, "sugarsG": 2.2, "fibreG": 2.1, "sodiumMg": 183 }
+  }
+}
