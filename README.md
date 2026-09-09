@@ -61,38 +61,42 @@ dist/               generated, gitignored
 
 `src/tokens.css` is the TracPlus design system as issued, lifted verbatim from the
 Claude Design canvas so it can be diffed when the canvas changes. `src/style.css` is
-this site's use of it, and every deviation lives there rather than being edited into the
-token file.
+this site's use of it, and any deviation lives there rather than being edited into the
+token file. An `--rb-*` layer between the two names what each colour is *for* and points
+at the brand tokens, so a colour change happens in one place.
 
-An `--rb-*` layer sits between the two. The brand tokens are fixed values, and navy in
-particular does double duty as both a heading colour and the hero background, which need
-to move in opposite directions in dark mode. So the `--rb-*` layer names what each
-colour is *for*, points at the brand tokens in light mode, and takes derived values in
-dark.
+**Colour is the canvas palette exactly, light only.** The canvas defines no dark mode
+and matching the design was the priority, so there isn't one.
 
-Three deviations, all deliberate:
+That has a contrast consequence, recorded here rather than left unstated. Measured
+against `#E8EFF6`, the lightest surface text sits on, four values fall below WCAG AA,
+which is 4.5:1 for normal text:
 
-- **Body text is 16px weight 400**, not the system's 14px weight 300. The system is
-  built for a dense operational console read at desk distance; this gets read at arm's
-  length on a bench.
-- **Four brand values are darkened where text depends on them.** Measured against
-  `#E8EFF6`, the lightest surface text sits on, they fail WCAG AA as issued:
-  `--text-secondary` at 3.54:1, `--text-tertiary` at 2.32:1, `--color-ink-blue` at
-  3.11:1, and `--color-blue` at 3.15:1, which also means white button labels on the
-  primary fill. Hue is preserved and only lightness moves. Decorative uses of the blue
-  keep the true brand value. Every pairing in both palettes now clears AA, and the
-  numbers are in the comment at the top of `style.css`.
-- **A dark palette was derived**, since the system has none. Grounds are the brand navy
-  taken down in lightness, blues lifted until each pairing clears AA.
+| token | value | ratio | used for |
+|---|---|---|---|
+| `--text-secondary` | `#808285` | 3.54:1 | secondary body text |
+| `--text-tertiary` | `#A0A4A8` | 2.32:1 | ingredient notes, card meta |
+| `--color-ink-blue` | `#2A93D5` | 3.11:1 | the 12px uppercase group labels |
+| `--color-blue` | `#3192CF` | 3.15:1 | links, and white labels on the button fill |
+
+The white-on-blue button pairing is 3.42:1. If it ever wants fixing, the accessible
+variants that keep the same hue are `#5A5C5F`, `#6B6C6F`, `#2172A6` and `#2672A2`, and
+the navy already passes at 7.94:1, so the system has a compliant option. That is a
+change to make in the design system rather than only here.
+
+The one remaining deviation is type size: body text is 16px weight 400 rather than the
+system's 14px weight 300, and ingredient rows are 16px rather than 15.5px. The system is
+built for a dense console read at desk distance; this gets read at arm's length on a
+bench. The canvas itself already used 15.5px and 17px for content.
+
+The canvas has no media queries, so the responsive layout is this project's work, built
+from the canvas tokens: everything stacks below 60rem, and the two-column body with
+inline step time chips appears above it.
 
 Fonts are self-hosted: Figtree 600/700 and Open Sans 400/600, latin subset, 123 kB
 total, extracted from the design bundle so they are byte-identical to what the canvas
 used. Both families are open-licensed (OFL), and self-hosting is what lets the CSP stay
 at `font-src 'self'` with no external request.
-
-The service worker is the cache authority. Its version is a hash of the whole built
-output, so a deploy rolls the offline cache exactly once. That is why asset filenames
-stay stable and readable rather than carrying content hashes.
 
 ## Setting up GitHub Pages
 
