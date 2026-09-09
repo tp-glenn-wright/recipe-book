@@ -184,8 +184,13 @@ async function builtOutputGate() {
 
     // Inline event handlers would need script-src 'unsafe-inline' to run, so their
     // presence means either dead markup or a CSP about to be loosened.
+    //
+    // Attribute values are blanked out first. Escaped recipe text can legitimately
+    // contain the characters ` onload=` inside a quoted value, where it is inert;
+    // scanning the raw tag would flag that as a handler and be wrong.
     for (const tag of source.match(/<[a-z][^>]*>/gi) ?? []) {
-      const handler = tag.match(/\son([a-z]+)\s*=/i);
+      const withoutValues = tag.replace(/="[^"]*"/g, '=""').replace(/='[^']*'/g, "=''");
+      const handler = withoutValues.match(/\son([a-z]+)\s*=/i);
       if (handler) failures.push(`${page} has an inline ${handler[1]} handler: ${tag.slice(0, 80)}`);
     }
 

@@ -3,8 +3,8 @@
 
 import { renderPng } from './png.mjs';
 
-const ACCENT = [168, 65, 27];
-const CREAM = [250, 244, 235];
+const ACCENT = [19, 84, 135];   // --color-navy
+const CREAM = [240, 246, 251];  // --surface-subtle
 
 /** Signed distance helpers, all in normalised 0..1 space. */
 const dist = (x, y) => Math.hypot(x - 0.5, y - 0.5);

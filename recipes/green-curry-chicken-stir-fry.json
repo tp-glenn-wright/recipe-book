@@ -1,0 +1,62 @@
+{
+  "schemaVersion": 1,
+  "id": "green-curry-chicken-stir-fry",
+  "title": "Green Curry Chicken Stir-Fry",
+  "description": "A fast weeknight curry: sliced chicken and fresh vegetables in coconut milk, done in twenty minutes. Green curry pastes vary wildly in heat, so start with one tablespoon and add more once the milk is in.",
+  "image": null,
+  "source": { "kind": "photo", "citation": null, "url": null },
+  "added": "2026-09-09",
+  "updated": "2026-09-09",
+  "cuisine": "Thai",
+  "course": ["main", "dinner"],
+  "mainProtein": "chicken",
+  "tags": ["quick", "weeknight", "one-pot", "stovetop"],
+  "rating": null,
+  "difficulty": "easy",
+  "prepMinutes": 5,
+  "cookMinutes": 15,
+  "totalMinutes": 20,
+  "servings": 4,
+  "servingSizeG": 290,
+  "equipment": ["large frying pan or wok"],
+  "ingredients": [
+    {
+      "group": null,
+      "items": [
+        { "quantity": 500, "unit": "g", "item": "boneless chicken thighs or breasts", "note": "sliced", "raw": "500 g boneless chicken thighs or breasts, sliced" },
+        { "quantity": 2, "unit": "tbsp", "item": "Thai green curry paste", "note": null, "raw": "2 tbsp Thai green curry paste" },
+        { "quantity": 400, "unit": "ml", "item": "coconut milk", "note": null, "raw": "1 can (400 ml) coconut milk" },
+        { "quantity": 2, "unit": "cup", "item": "mixed vegetables", "note": "such as green beans, sliced capsicum or courgette", "raw": "2 cups mixed vegetables, such as green beans, sliced capsicum or courgette" },
+        { "quantity": 1, "unit": "tbsp", "item": "vegetable oil", "note": null, "raw": "1 tbsp vegetable oil" },
+        { "quantity": 1, "unit": "tbsp", "item": "fish sauce", "note": null, "raw": "1 tbsp fish sauce" },
+        { "quantity": 1, "unit": "tsp", "item": "sugar", "note": null, "raw": "1 tsp sugar" }
+      ]
+    },
+    {
+      "group": "To serve",
+      "items": [
+        { "quantity": null, "unit": null, "item": "fresh basil leaves", "note": null, "raw": "Fresh basil leaves" },
+        { "quantity": null, "unit": null, "item": "lime wedges", "note": null, "raw": "Lime wedges" },
+        { "quantity": null, "unit": null, "item": "steamed jasmine rice", "note": null, "raw": "Steamed jasmine rice" }
+      ]
+    }
+  ],
+  "steps": [
+    { "text": "Heat the oil in a large frying pan or wok over a medium-high heat, add the chicken and stir-fry for 4 to 5 minutes, until lightly browned.", "minutes": 5 },
+    { "text": "Add the green curry paste to the chicken and stir constantly for one minute, until fragrant.", "minutes": 1 },
+    { "text": "Pour in the coconut milk and bring to a gentle bubble.", "minutes": 3 },
+    { "text": "Toss in the vegetables, fish sauce and sugar, and cook for 3 to 5 minutes, until the vegetables are tender and the chicken is cooked through.", "minutes": 5 },
+    { "text": "Take off the heat, stir through the fresh basil and serve hot over steamed jasmine rice with lime wedges.", "minutes": null }
+  ],
+  "notes": [
+    "Green curry pastes vary a lot in heat. Start with one tablespoon, taste once the coconut milk is in, and add more from there.",
+    "The nutrition below is for the curry alone. The source also gave it with a cup of rice: 2600 kJ, 620 kcal, 30 g protein, 53.5 g carbohydrate a serve.",
+    "Most of the sodium is the fish sauce and the paste, so those are the levers if you are watching it."
+  ],
+  "nutrition": {
+    "source": "estimated",
+    "assumptions": "The source states its own figures are estimated from standard composition data rather than a laboratory analysis, and vary with the brand of coconut milk and curry paste. Both the per-serving and per-100 g columns are taken directly from that page, including the stated 290 g serving size, so nothing here is my own arithmetic. Figures are for the curry only, without rice.",
+    "perServing": { "kj": 1740, "kcal": 415, "proteinG": 26, "fatG": 31, "saturatedFatG": 21, "carbsG": 8.5, "sugarsG": 3.5, "fibreG": 3, "sodiumMg": 660 },
+    "per100g": { "kj": 600, "kcal": 143, "proteinG": 9, "fatG": 10.7, "saturatedFatG": 7.2, "carbsG": 2.9, "sugarsG": 1.2, "fibreG": 1, "sodiumMg": 230 }
+  }
+}

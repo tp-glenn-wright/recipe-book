@@ -1,0 +1,61 @@
+{
+  "schemaVersion": 1,
+  "id": "parmesan-garlic-crumbed-fish",
+  "title": "Parmesan Garlic Crumbed Fish with Green Beans",
+  "description": "Twenty minutes, and the mustard is what makes it work: it glues the crumb to the fish and cuts the parmesan. Any firm white fish will do.",
+  "image": null,
+  "source": { "kind": "book", "citation": "The 321 Life", "url": null },
+  "added": "2026-09-09",
+  "updated": "2026-09-09",
+  "cuisine": null,
+  "course": ["main", "dinner"],
+  "mainProtein": "fish",
+  "tags": ["quick", "weeknight", "high-protein", "stovetop"],
+  "rating": null,
+  "difficulty": "easy",
+  "prepMinutes": 8,
+  "cookMinutes": 12,
+  "totalMinutes": 20,
+  "servings": 2,
+  "servingSizeG": 330,
+  "equipment": ["non-stick frying pan", "mixing bowl"],
+  "ingredients": [
+    {
+      "group": "Crumb",
+      "items": [
+        { "quantity": 50, "unit": "g", "item": "white breadcrumbs", "note": null, "raw": "Breadcrumbs, white (50 g), about 1/2 cup" },
+        { "quantity": 1, "unit": "tbsp", "item": "fresh parsley", "note": "chopped", "raw": "Parsley, raw (1 tablespoon)" },
+        { "quantity": 30, "unit": "g", "item": "parmesan cheese", "note": "fresh, grated, about 1/3 cup", "raw": "Cheese, parmesan, fresh (30 g)" },
+        { "quantity": 1, "unit": "tsp", "item": "garlic", "note": "crushed, about 1 clove", "raw": "Garlic, raw (1 teaspoon)" },
+        { "quantity": 7, "unit": "g", "item": "olive oil", "note": null, "raw": "Olive oil (1/2 tablespoon (7 g))" },
+        { "quantity": 1, "unit": "pinch", "item": "salt", "note": null, "raw": "Salt (1 pinch)" }
+      ]
+    },
+    {
+      "group": "Fish and beans",
+      "items": [
+        { "quantity": 300, "unit": "g", "item": "snapper fillet", "note": "two 150 g pieces", "raw": "Snapper, fillet, raw (300 g)" },
+        { "quantity": 30, "unit": "g", "item": "mustard", "note": "about 2 tablespoons", "raw": "Mustard (2 tablespoons (30 g))" },
+        { "quantity": 300, "unit": "g", "item": "green beans", "note": "about 3 cups", "raw": "Green beans, raw (3 cups (300 g))" }
+      ]
+    }
+  ],
+  "steps": [
+    { "text": "Combine the breadcrumbs, parsley, parmesan, garlic, olive oil and a pinch of salt in a bowl and stir well.", "minutes": 3 },
+    { "text": "Season the two pieces of fish with salt and pepper, then spread the mustard all over each fillet.", "minutes": 2 },
+    { "text": "Press the fish into the crumb mixture to coat it, and spray with a little olive oil if you have it.", "minutes": 2 },
+    { "text": "Cook the fish in a non-stick frying pan with a little olive oil, or bake it in the oven.", "minutes": 10 },
+    { "text": "Serve with steamed or sauteed green beans.", "minutes": 2 }
+  ],
+  "notes": [
+    "Any white fish works. Snapper is what the source used.",
+    "The source panel also gave micronutrients, which this collection does not store: notably 1140 mg potassium, 431 mg calcium, 745 mg phosphorous, 114 mg magnesium, 4 mg iron and 103 mg cholesterol per serving.",
+    "The header on the source page was faint, so the citation is my best reading of it rather than a certainty."
+  ],
+  "nutrition": {
+    "source": "label",
+    "assumptions": "Read off the printed per-serving panel, which gives every field this collection stores. The panel quotes calories only, so kilojoules are the fixed 4.184 conversion of 391 kcal rather than an estimate. Serving size of 330 g is worked out from the ingredient masses, roughly 727 g losing about 9% as the fish cooks, over two servings; the per-100 g column is derived from that.",
+    "perServing": { "kj": 1636, "kcal": 391, "proteinG": 43, "fatG": 12, "saturatedFatG": 4, "carbsG": 28, "sugarsG": 6, "fibreG": 6, "sodiumMg": 738 },
+    "per100g": { "kj": 496, "kcal": 118.5, "proteinG": 13, "fatG": 3.64, "saturatedFatG": 1.21, "carbsG": 8.5, "sugarsG": 1.82, "fibreG": 1.82, "sodiumMg": 224 }
+  }
+}

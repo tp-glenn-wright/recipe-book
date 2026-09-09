@@ -12,6 +12,7 @@ import { html, raw, render, escapeHtml, jsonLd } from './html.mjs';
 import { inspect, strip } from './exif.mjs';
 import { validateRecipe } from './validate.mjs';
 import { UNSAFE_PATTERNS } from './security.mjs';
+import { renderRecipe, yieldWord, formatMinutes, normalise } from './pages.mjs';
 import { roundQuantity, formatQuantity, formatIngredient, formatAmount, pluraliseUnit } from '../src/scale.js';
 
 // ---------------------------------------------------------------------------
@@ -288,6 +289,148 @@ describe('validation warns without failing', () => {
 });
 
 // ---------------------------------------------------------------------------
+// Page rendering. These were previously only exercised by the sample recipes,
+// which is not coverage: sample data gets deleted. Escaping in particular has to
+// be pinned by a test, because a silently broken escaper still reports a pass.
+// ---------------------------------------------------------------------------
+
+describe('page rendering', () => {
+  const baking = () => ({
+    ...baseRecipe(),
+    id: 'ginger-crunch',
+    title: 'Ginger Crunch',
+    course: ['baking'],
+    mainProtein: 'none',
+    servings: 24,
+  });
+
+  test('a meal is served, baking is made', () => {
+    assert.equal(yieldWord(baseRecipe()), 'Serves');
+    assert.equal(yieldWord(baking()), 'Makes');
+    assert.equal(yieldWord({ course: ['dessert'] }), 'Makes');
+    assert.equal(yieldWord({ course: ['soup'] }), 'Serves');
+  });
+
+  test('a baking recipe reads Makes, not Serves', () => {
+    const page = renderRecipe(baking(), [baking()]);
+    assert.match(page, /Makes 24/);
+    assert.doesNotMatch(page, /Serves 24/);
+  });
+
+  test('mainProtein "none" gets no meta chip', () => {
+    assert.doesNotMatch(renderRecipe(baking(), [baking()]), /meta-chip">None</);
+    assert.match(renderRecipe(baseRecipe(), [baseRecipe()]), /meta-chip">Beef</);
+  });
+
+  test('every page carries the CSP and the noindex meta', () => {
+    const page = renderRecipe(baseRecipe(), [baseRecipe()]);
+    assert.match(page, /http-equiv="Content-Security-Policy"/);
+    assert.match(page, /name="robots" content="noindex, nofollow"/);
+
+    // The escaper turns the policy's single quotes into &#39;, which the HTML parser
+    // decodes back before the CSP is applied. So decode before asserting on it.
+    const content = page.match(/http-equiv="Content-Security-Policy" content="([^"]*)"/)?.[1];
+    assert.ok(content, 'no CSP content attribute');
+    const policy = content.replace(/&#39;/g, "'").replace(/&amp;/g, '&');
+    assert.match(policy, /default-src 'none'/);
+    assert.match(policy, /script-src 'self'/);
+    assert.doesNotMatch(policy, /unsafe-inline|unsafe-eval/);
+    // frame-ancestors is ignored in a meta tag and makes browsers log a warning.
+    assert.doesNotMatch(policy, /frame-ancestors/);
+  });
+
+  test('a script payload in recipe text cannot escape into the page', () => {
+    const nasty = baseRecipe();
+    nasty.title = '<script>alert(1)</script>';
+    nasty.description = '" onload="alert(2)';
+    nasty.notes = ['</script><img src=x onerror=alert(3)>'];
+    nasty.ingredients[0].items[0].item = '</title><script>alert(4)</script>';
+    nasty.image = null;
+    const page = renderRecipe(nasty, [nasty]);
+
+    // Assert at the tag level, not on substrings: escaped text legitimately still
+    // contains the characters "onerror=alert", it just cannot form an element.
+    // This recipe has no image, so any <img> at all would mean the payload parsed.
+    assert.doesNotMatch(page, /<img/i, 'payload produced an img element');
+    assert.doesNotMatch(page, /<script[^>]*>\s*alert/i, 'payload produced a script element');
+    for (const tag of page.match(/<[a-z][^>]*>/gi) ?? []) {
+      // Blank the attribute values: ` onload=` inside a quoted value is inert text,
+      // and an escaped `&quot;` does not close the attribute it sits in.
+      const names = tag.replace(/="[^"]*"/g, '=""').replace(/='[^']*'/g, "=''");
+      assert.doesNotMatch(names, /\son[a-z]+\s*=/i, `payload produced an event handler: ${tag}`);
+    }
+    // Present as text, and inert.
+    assert.match(page, /&lt;script&gt;alert\(1\)&lt;\/script&gt;/);
+    assert.match(page, /&lt;img src=x onerror=alert\(3\)&gt;/);
+  });
+
+  test('the only script tags are external modules and JSON-LD', () => {
+    for (const tag of renderRecipe(baseRecipe(), [baseRecipe()]).match(/<script[^>]*>/g) ?? []) {
+      assert.match(tag, /src="[^"]*" type="module"|type="application\/ld\+json"/, tag);
+    }
+  });
+
+  test('nothing references an external origin', () => {
+    const page = renderRecipe(baseRecipe(), [baseRecipe()]);
+    for (const [, attribute, value] of page.matchAll(/\b(src|href)="([^"]*)"/g)) {
+      assert.doesNotMatch(value, /^(?:https?:)?\/\//, `${attribute}="${value}"`);
+    }
+  });
+
+  test('the second argument must be the recipe list', () => {
+    assert.throws(() => renderRecipe(baseRecipe(), 'beef-rendang.json'), /expects the recipe list/);
+  });
+
+  test('the pager and pill strip link to the neighbouring recipes', () => {
+    const a = { ...baseRecipe(), id: 'aaa-first', title: 'Aaa First' };
+    const b = { ...baseRecipe(), id: 'bbb-middle', title: 'Bbb Middle' };
+    const c = { ...baseRecipe(), id: 'ccc-last', title: 'Ccc Last' };
+    const page = renderRecipe(b, [a, b, c]);
+    assert.match(page, /2 of 3/);
+    assert.match(page, /href="\.\.\/aaa-first\/" rel="prev"/);
+    assert.match(page, /href="\.\.\/ccc-last\/" rel="next"/);
+    assert.match(page, /class="pill is-current"[^>]*aria-current="page"/);
+
+    // The ends have no neighbour to link to, so those controls are inert, not broken.
+    const first = renderRecipe(a, [a, b, c]);
+    assert.match(first, /1 of 3/);
+    assert.doesNotMatch(first, /rel="prev"/);
+    assert.match(first, /pager-btn is-disabled/);
+  });
+
+  test('a lone recipe gets no pager and no pill strip', () => {
+    const page = renderRecipe(baseRecipe(), [baseRecipe()]);
+    assert.doesNotMatch(page, /pill-row/);
+    assert.doesNotMatch(page, /pager-count/);
+  });
+
+  test('steps and ingredients render as toggle buttons for ticking off', () => {
+    const page = renderRecipe(baseRecipe(), [baseRecipe()]);
+    assert.match(page, /class="step" aria-pressed="false"/);
+    assert.match(page, /class="ingredient" aria-pressed="false"/);
+    assert.match(page, /Tap a step to mark it done\. 0 of 1 done\./);
+  });
+
+  test('the search field is a real form pointing at the index', () => {
+    // form-action 'self' is in the CSP for exactly this, so search works with no script.
+    const page = renderRecipe(baseRecipe(), [baseRecipe()]);
+    assert.match(page, /<form class="search-form" action="\.\.\/\.\.\/" method="get"/);
+    assert.match(page, /name="q"/);
+  });
+
+  test('minutes read as hours once past sixty', () => {
+    assert.equal(formatMinutes(45), '45 min');
+    assert.equal(formatMinutes(60), '1 h');
+    assert.equal(formatMinutes(210), '3 h 30');
+    assert.equal(formatMinutes(null), null);
+  });
+
+  test('search folding strips accents and case', () => {
+    assert.equal(normalise('Purée Crème Brûlée'), 'puree creme brulee');
+  });
+});
+
+// ---------------------------------------------------------------------------
 // Scaling. The reason quantities are numbers rather than strings.
 // ---------------------------------------------------------------------------
 
@@ -303,6 +446,11 @@ describe('scaling', () => {
     assert.equal(roundQuantity(0.51, 'tsp'), 0.5);
     assert.equal(roundQuantity(0.7, 'tsp'), 0.75);
     assert.equal(roundQuantity(4.3, 'tbsp'), 4.25);
+  });
+
+  test('spoons never land on a third, because no spoon measures one', () => {
+    assert.equal(formatQuantity(roundQuantity(2 / 3, 'tsp'), 'tsp'), '⅝');
+    assert.equal(formatQuantity(roundQuantity(2 / 3, 'cup'), 'cup'), '⅔');
   });
 
   test('rounds counted things to halves and never to zero', () => {
@@ -379,6 +527,17 @@ describe('scaling', () => {
   test('leaves unquantified lines exactly as written', () => {
     const item = { quantity: null, unit: 'to taste', item: 'sea salt', note: null, raw: 'sea salt, to taste' };
     assert.equal(formatIngredient(item, 4).text, 'sea salt, to taste');
+  });
+
+  test('scaling by one reproduces the source exactly, without rounding', () => {
+    // A third of a cup must not print as three eighths just because the rounder
+    // snaps spoon and cup measures to eighths.
+    const third = { quantity: 1 / 3, unit: 'cup', item: 'chilli jam', note: null, raw: '1/3 cup chilli jam' };
+    assert.equal(formatAmount(third, 1), '⅓ cup');
+    const eighth = { quantity: 0.125, unit: 'tsp', item: 'chilli powder', note: null, raw: '1/8 tsp chilli powder' };
+    assert.equal(formatAmount(eighth, 1), '⅛ tsp');
+    // Scaling still rounds, because a scaled figure is an approximation anyway.
+    assert.equal(formatAmount(third, 2), '⅔ cup');
   });
 
   test('scaling by one is a no-op on the numbers', () => {

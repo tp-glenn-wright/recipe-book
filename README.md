@@ -51,11 +51,44 @@ every recipe page still reads.
 ```
 recipes/            source of truth
 images/             dish photos, resized and metadata-free
-src/                what ships to the browser: css, js, service worker
+src/                what ships to the browser: css, js, fonts, service worker
 tools/              build, validate, security gates, templates, tests
 dist/               generated, gitignored
 .github/workflows/  ci.yml gates, deploy.yml publishes
 ```
+
+## Styling
+
+`src/tokens.css` is the TracPlus design system as issued, lifted verbatim from the
+Claude Design canvas so it can be diffed when the canvas changes. `src/style.css` is
+this site's use of it, and every deviation lives there rather than being edited into the
+token file.
+
+An `--rb-*` layer sits between the two. The brand tokens are fixed values, and navy in
+particular does double duty as both a heading colour and the hero background, which need
+to move in opposite directions in dark mode. So the `--rb-*` layer names what each
+colour is *for*, points at the brand tokens in light mode, and takes derived values in
+dark.
+
+Three deviations, all deliberate:
+
+- **Body text is 16px weight 400**, not the system's 14px weight 300. The system is
+  built for a dense operational console read at desk distance; this gets read at arm's
+  length on a bench.
+- **Four brand values are darkened where text depends on them.** Measured against
+  `#E8EFF6`, the lightest surface text sits on, they fail WCAG AA as issued:
+  `--text-secondary` at 3.54:1, `--text-tertiary` at 2.32:1, `--color-ink-blue` at
+  3.11:1, and `--color-blue` at 3.15:1, which also means white button labels on the
+  primary fill. Hue is preserved and only lightness moves. Decorative uses of the blue
+  keep the true brand value. Every pairing in both palettes now clears AA, and the
+  numbers are in the comment at the top of `style.css`.
+- **A dark palette was derived**, since the system has none. Grounds are the brand navy
+  taken down in lightness, blues lifted until each pairing clears AA.
+
+Fonts are self-hosted: Figtree 600/700 and Open Sans 400/600, latin subset, 123 kB
+total, extracted from the design bundle so they are byte-identical to what the canvas
+used. Both families are open-licensed (OFL), and self-hosting is what lets the CSP stay
+at `font-src 'self'` with no external request.
 
 The service worker is the cache authority. Its version is a hash of the whole built
 output, so a deploy rolls the offline cache exactly once. That is why asset filenames
@@ -110,6 +143,9 @@ Two things this does not cover, stated plainly rather than left implied:
 - **Clickjacking.** `frame-ancestors` is ignored when delivered in a meta tag, and
   GitHub Pages cannot set response headers, so the site can be framed. For a recipe book
   with no login and no actions to trigger, there is nothing to hijack.
+- **`form-action 'self'`** is in the policy so the search field on a recipe page can
+  submit back to the index without JavaScript. It is a GET form to our own origin and
+  posts nothing.
 - **Search engines.** Every page carries `<meta name="robots" content="noindex,
   nofollow">`, which is what actually keeps this out of search results. The `robots.txt`
   in `dist/` is only honoured at a domain root, so on a `github.io/recipe-book/` project

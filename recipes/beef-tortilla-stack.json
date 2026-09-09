@@ -1,0 +1,63 @@
+{
+  "schemaVersion": 1,
+  "id": "beef-tortilla-stack",
+  "title": "Beef Tortilla Stack",
+  "description": "A layered tortilla and mince bake, cut like a pie. Hold back a cup of the tomato sauce before the mince goes in, because that is what stops the top sheet drying out.",
+  "image": null,
+  "source": { "kind": "photo", "citation": null, "url": null },
+  "added": "2026-09-09",
+  "updated": "2026-09-09",
+  "cuisine": "Mexican",
+  "course": ["main", "dinner"],
+  "mainProtein": "beef",
+  "tags": ["make-ahead", "oven", "crowd-pleaser", "kids"],
+  "rating": null,
+  "difficulty": "easy",
+  "prepMinutes": 20,
+  "cookMinutes": 50,
+  "totalMinutes": 70,
+  "servings": 8,
+  "servingSizeG": 235,
+  "equipment": ["large saucepan", "23 cm quiche or pie plate"],
+  "ingredients": [
+    {
+      "group": null,
+      "items": [
+        { "quantity": 750, "unit": "g", "item": "lean beef mince", "note": null, "raw": "750 g lean beef mince" },
+        { "quantity": 5, "unit": "sheet", "item": "tortillas", "note": null, "raw": "5 tortilla sheets" },
+        { "quantity": 0.5, "unit": "cup", "item": "tasty cheese", "note": "grated, 25% reduced fat", "raw": "1/2 cup grated 25% reduced fat tasty cheese" },
+        { "quantity": 1, "unit": "cup", "item": "onion", "note": "finely diced", "raw": "1 cup onion finely diced" },
+        { "quantity": 1, "unit": "tsp", "item": "crushed garlic", "note": "from a jar", "raw": "1 teaspoon crushed garlic (in jar)" },
+        { "quantity": 0.5, "unit": "cup", "item": "corn kernels", "note": null, "raw": "1/2 cup corn kernels" },
+        { "quantity": 1, "unit": "cup", "item": "capsicum", "note": "diced small", "raw": "1 cup small capsicum diced" },
+        { "quantity": 425, "unit": "g", "item": "crushed tomatoes", "note": null, "raw": "1 x 425 g can crushed tomatoes" },
+        { "quantity": 3, "unit": "tbsp", "item": "tomato paste", "note": null, "raw": "3 tablespoons tomato paste" },
+        { "quantity": 375, "unit": "ml", "item": "water", "note": null, "raw": "1 1/2 cups water" },
+        { "quantity": 1, "unit": "tsp", "item": "beef stock powder", "note": null, "raw": "1 teaspoon beef stock powder" },
+        { "quantity": 35, "unit": "g", "item": "taco seasoning", "note": "Old El Paso or similar", "raw": "1 x 35 g pkt taco seasoning (Old El Paso)" },
+        { "quantity": null, "unit": null, "item": "cooking spray", "note": null, "raw": "cooking spray" }
+      ]
+    }
+  ],
+  "steps": [
+    { "text": "Heat the oven to 180 C fan forced.", "minutes": null },
+    { "text": "Coat a large saucepan with cooking spray and saute the mince. When it is cooked, drain it and set it aside in a bowl.", "minutes": 8 },
+    { "text": "Add everything except the tortillas and cheese to the saucepan, bring to the boil and simmer for 10 minutes.", "minutes": 12 },
+    { "text": "Remove a cup of the tomato sauce and set it aside. This goes on top at the end.", "minutes": null },
+    { "text": "Return the mince to the remaining sauce and bring back to the boil.", "minutes": 3 },
+    { "text": "Coat a 23 cm quiche or pie plate with cooking spray, lay a tortilla sheet on the base and spread one and a half cups of the mince sauce over it. Repeat three more times.", "minutes": 5 },
+    { "text": "Top with the last tortilla sheet, cover it with the reserved tomato sauce and sprinkle the cheese over.", "minutes": null },
+    { "text": "Bake for 30 minutes, or until the cheese has browned.", "minutes": 30 }
+  ],
+  "notes": [
+    "The source offers 750 g lean chicken mince, or for a vegetarian version a 450 g can of refried beans plus a 425 g can of kidney beans, drained and washed, combined with the tomato sauce and layered the same way.",
+    "Let it settle for ten minutes out of the oven before cutting, or the layers slide apart on the plate.",
+    "Sodium is high at around 1008 mg a serve, almost all of it from the taco seasoning packet and the stock powder. Using half the seasoning packet is the easiest lever."
+  ],
+  "nutrition": {
+    "source": "estimated",
+    "assumptions": "Energy, fat, saturated fat, fibre, protein, carbohydrate and sodium are read off the printed panel, beef column. The panel has no sugars row, so that figure is estimated from the ingredients, mostly the canned tomatoes, tomato paste, corn and onion. Serving size of 235 g is worked out from the ingredient masses, roughly 2.1 kg after draining the mince and losing about 12% in the bake, over eight servings; the per-100 g column is derived from that.",
+    "perServing": { "kj": 1173, "kcal": 280, "proteinG": 28.5, "fatG": 7.6, "saturatedFatG": 3.5, "carbsG": 23.9, "sugarsG": 5.4, "fibreG": 3.3, "sodiumMg": 1008 },
+    "per100g": { "kj": 499, "kcal": 119.1, "proteinG": 12.1, "fatG": 3.23, "saturatedFatG": 1.49, "carbsG": 10.2, "sugarsG": 2.3, "fibreG": 1.4, "sodiumMg": 429 }
+  }
+}

@@ -26,6 +26,20 @@ const COUNTED = new Set([null, 'piece', 'clove', 'slice', 'sprig', 'stalk', 'bun
 /** Units where cooks think in familiar fractions. */
 const FRACTIONAL = new Set(['tsp', 'tbsp', 'cup']);
 
+/* Measuring cups come in thirds; measuring spoons do not. So a scaled cup measure may
+ * land on a third, and a scaled spoon measure snaps to eighths. Getting this wrong is
+ * how doubling a third of a cup ends up printing as five eighths. */
+const EIGHTHS = [0, 1 / 8, 1 / 4, 3 / 8, 1 / 2, 5 / 8, 3 / 4, 7 / 8, 1];
+const CUP_STEPS = [0, 1 / 8, 1 / 4, 1 / 3, 3 / 8, 1 / 2, 5 / 8, 2 / 3, 3 / 4, 7 / 8, 1];
+
+/** Snap the fractional part of a value to the nearest measure a cook actually owns. */
+function snapFraction(value, steps) {
+  const whole = Math.floor(value);
+  const rest = value - whole;
+  const nearest = steps.reduce((best, step) => (Math.abs(rest - step) < Math.abs(rest - best) ? step : best), steps[0]);
+  return whole + nearest;
+}
+
 /** Units that take a plural. Metric abbreviations never do: it is 400 g, not 400 gs. */
 const PLURALS = {
   cup: 'cups', clove: 'cloves', piece: 'pieces', slice: 'slices', sprig: 'sprigs',
@@ -50,7 +64,7 @@ export function roundQuantity(value, unit) {
     return value < 1 ? Math.max(0.5, Math.round(value * 2) / 2) : Math.round(value * 2) / 2;
   }
   if (FRACTIONAL.has(unit)) {
-    if (value < 3) return Math.max(1 / 8, Math.round(value * 8) / 8);
+    if (value < 3) return Math.max(1 / 8, snapFraction(value, unit === 'cup' ? CUP_STEPS : EIGHTHS));
     return Math.round(value * 4) / 4;
   }
   if (value >= 100) return Math.round(value / 5) * 5;
@@ -59,9 +73,14 @@ export function roundQuantity(value, unit) {
   return Math.round(value * 100) / 100;
 }
 
-/** Scale then round in one step. */
+/**
+ * Scale then round in one step.
+ * At 1x nothing is rounded, so the unscaled page reproduces the source exactly. Without
+ * this, a recorded 1/3 cup would snap to the nearest eighth and print as 3/8 cup.
+ */
 export function scaleQuantity(quantity, factor, unit) {
   if (quantity === null || quantity === undefined) return null;
+  if (factor === 1) return quantity;
   return roundQuantity(quantity * factor, unit ?? null);
 }
 

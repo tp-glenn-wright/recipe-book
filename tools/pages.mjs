@@ -1,12 +1,12 @@
 // HTML page templates, rendered at build time.
 //
-// Two things worth knowing about the shape of the output:
+// Styling follows the TracPlus design canvas (see src/tokens.css). Two things about
+// the shape of the output are worth knowing:
 //
-//   1. The index page ships every recipe card already rendered, each carrying data-*
-//      attributes for its facets and a normalised search blob. Filtering is then a
-//      matter of toggling `hidden` on nodes that already exist, so there is no fetch,
-//      nothing to wait for on a phone, and the full list still reads with JavaScript
-//      off.
+//   1. The index ships every recipe card already rendered, each carrying data-*
+//      attributes for its facets and a pre-normalised search blob. Filtering then
+//      toggles `hidden` on nodes that already exist, so there is no fetch, nothing to
+//      wait for on a phone, and the full list still reads with JavaScript off.
 //   2. Nothing is interpolated into HTML except through the html`` tag, which escapes
 //      by default. Recipe text originates in a photograph read by a model, so it is
 //      untrusted input.
@@ -17,8 +17,13 @@ import { formatIngredient, formatAmount } from '../src/scale.js';
 
 const SITE_TITLE = 'Recipe Book';
 
-/* Everything is first-party, so the policy can name 'self' and nothing else. The only
- * concession is data: for images, which the placeholder icons use. */
+/* Everything is first-party, so the policy names 'self' and nothing else. Two
+ * concessions: data: for images, which the placeholder art uses, and form-action
+ * 'self' so the search box on a recipe page can submit back to the index without
+ * JavaScript.
+ *
+ * frame-ancestors is deliberately absent: it is ignored in a meta tag, and GitHub
+ * Pages cannot set response headers. See README. */
 const CSP = [
   "default-src 'none'",
   "script-src 'self'",
@@ -28,10 +33,7 @@ const CSP = [
   "connect-src 'self'",
   "manifest-src 'self'",
   "base-uri 'none'",
-  "form-action 'none'",
-  // frame-ancestors is deliberately absent: it is ignored when delivered in a meta
-  // tag, and GitHub Pages cannot set response headers. Browsers log a warning if you
-  // include it anyway. See README for what that leaves uncovered.
+  "form-action 'self'",
 ].join('; ');
 
 /** "3 h 30" reads faster than "210 min" once you are past an hour. */
@@ -52,13 +54,13 @@ export function normalise(text) {
 }
 
 const titleCase = (s) => s.charAt(0).toUpperCase() + s.slice(1);
+const tagLabel = (tag) => titleCase(tag.replace(/-/g, ' '));
 
 /** Biscuits and cakes are made, not served, and the count means items not people. */
 export function yieldWord(recipe) {
   const baked = ['baking', 'bread', 'snack', 'dessert'];
   return recipe.course.some((course) => baked.includes(course)) ? 'Makes' : 'Serves';
 }
-const tagLabel = (tag) => titleCase(tag.replace(/-/g, ' '));
 
 /** Every word worth matching on, flattened once at build time. */
 function searchBlob(recipe) {
@@ -76,6 +78,28 @@ function searchBlob(recipe) {
   return normalise(parts.filter(Boolean).join(' ')).replace(/\s+/g, ' ').trim();
 }
 
+/* ---------------------------------------------------------------- icons ----
+ * Inline SVG, because the CSP allows no external requests and an icon font would be
+ * another 40 kB for a dozen glyphs. Stroke colour is inherited from currentColor. */
+
+const icon = (paths, size = 18) => html`<svg class="icon" viewBox="0 0 24 24" width="${size}" height="${size}"
+  fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"
+  aria-hidden="true" focusable="false">${raw(paths)}</svg>`;
+
+const ICONS = {
+  search: '<circle cx="11" cy="11" r="7"></circle><path d="m20 20-3.2-3.2"></path>',
+  filter: '<path d="M3 6h18M6 12h12M10 18h4"></path>',
+  clock: '<circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path>',
+  cook: '<path d="M4 20h16"></path><path d="M5 15h14a7 7 0 0 0-14 0Z"></path><path d="M12 5v3"></path>',
+  left: '<path d="m14 6-6 6 6 6"></path>',
+  right: '<path d="m10 6 6 6-6 6"></path>',
+  minus: '<path d="M5 12h14"></path>',
+  plus: '<path d="M12 5v14"></path><path d="M5 12h14"></path>',
+  download: '<path d="M12 4v11"></path><path d="m7 11 5 5 5-5"></path><path d="M5 20h14"></path>',
+};
+
+/* --------------------------------------------------------------- layout ---- */
+
 function layout({ title, description, root, bodyClass, script, head = '', body }) {
   return render(html`<!doctype html>
 <html lang="en-NZ">
@@ -87,8 +111,11 @@ function layout({ title, description, root, bodyClass, script, head = '', body }
 <meta name="robots" content="noindex, nofollow">
 <title>${title}</title>
 <meta name="description" content="${description}">
-<meta name="theme-color" content="#a8411b" media="(prefers-color-scheme: light)">
-<meta name="theme-color" content="#16140f" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#135487" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0d1b27" media="(prefers-color-scheme: dark)">
+<link rel="preload" href="${root}assets/fonts/figtree-700.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="${root}assets/fonts/open-sans-400.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="${root}assets/tokens.css">
 <link rel="stylesheet" href="${root}assets/style.css">
 <link rel="manifest" href="${root}manifest.webmanifest">
 <link rel="icon" href="${root}assets/icon-192.png" sizes="192x192" type="image/png">
@@ -103,10 +130,41 @@ ${body}
 `);
 }
 
+/**
+ * Site header. The search field is a real GET form pointing at the index, so on a
+ * recipe page it navigates to /?q=term and the index reads the query out of the URL.
+ * That works with JavaScript off, which is why form-action 'self' is in the CSP.
+ */
+function siteHeader({ root, count, live }) {
+  return html`<header class="site-header">
+  <div class="header-inner">
+    <a class="brand" href="${root || './'}">
+      <span class="brand-dot" aria-hidden="true"></span>
+      <span class="brand-name">${SITE_TITLE}</span>
+    </a>
+
+    <form class="search-form" action="${root || './'}" method="get" role="search">
+      <span class="search-icon" aria-hidden="true">${icon(ICONS.search)}</span>
+      <label class="visually-hidden" for="q">Search recipes</label>
+      <input class="search" id="q" name="q" type="search" placeholder="Search recipes"
+        autocomplete="off" enterkeyhint="search" spellcheck="false">
+    </form>
+
+    <div class="header-actions">
+      ${live
+        ? html`<button type="button" class="btn btn-quiet filters-toggle" id="filters-toggle" aria-expanded="false" aria-controls="facets">
+            ${icon(ICONS.filter, 16)}Filters<span class="count" id="filter-count"></span>
+          </button>
+          <button type="button" class="btn btn-quiet offline-btn" id="offline" hidden>${icon(ICONS.download, 16)}Save offline</button>`
+        : html`<a class="btn btn-quiet" href="${root}">All ${count} recipes</a>`}
+    </div>
+  </div>
+</header>`;
+}
+
 /* ---------------------------------------------------------------- index ---- */
 
 function card(recipe) {
-  const href = `recipes/${recipe.id}/`;
   const kcal = recipe.nutrition.perServing.kcal;
   const protein = recipe.nutrition.perServing.proteinG;
   const media = recipe.image
@@ -126,9 +184,10 @@ function card(recipe) {
     data-added="${recipe.added}"
     data-rating="${recipe.rating ?? 0}"
     data-search="${searchBlob(recipe)}">
-  <a class="card-link" href="${href}">
+  <a class="card-link" href="recipes/${recipe.id}/">
     <span class="card-media">${media}</span>
     <span class="card-body">
+      <span class="card-kicker">${[recipe.course[0], recipe.cuisine].filter(Boolean).map(titleCase).join(' · ')}</span>
       <h2 class="card-title">${recipe.title}</h2>
       <span class="card-desc">${recipe.description}</span>
       <ul class="card-meta">
@@ -144,7 +203,7 @@ function card(recipe) {
 function chipGroup(legend, name, values, labeller = tagLabel) {
   if (!values.length) return '';
   return html`<fieldset class="facet" data-facet="${name}">
-  <legend>${legend}</legend>
+  <legend class="facet-label">${legend}</legend>
   <div class="chips">
     ${values.map((value) => html`<button type="button" class="chip" data-value="${value}" aria-pressed="false">${labeller(value)}</button>`)}
   </div>
@@ -161,21 +220,11 @@ export function renderIndex(recipes) {
   const maxTime = Math.max(60, ...sorted.map((r) => r.totalMinutes));
   const maxProtein = Math.max(10, ...sorted.map((r) => Math.ceil(r.nutrition.perServing.proteinG)));
   const count = sorted.length;
+  const plural = count === 1 ? 'recipe' : 'recipes';
 
-  const body = html`<div class="wrap">
-<header class="site-header">
-  <h1 class="site-title">${SITE_TITLE}</h1>
-  <p class="site-count">${count} ${count === 1 ? 'recipe' : 'recipes'}</p>
-  <button type="button" class="offline btn-quiet" id="offline" hidden>Save for offline</button>
-</header>
+  const body = html`${siteHeader({ root: '', count, live: true })}
 
-<div class="controls">
-  <div class="search-row">
-    <label class="visually-hidden" for="q">Search recipes</label>
-    <input class="search" id="q" type="search" placeholder="Search recipes or ingredients" autocomplete="off" enterkeyhint="search" spellcheck="false">
-    <button type="button" class="filters-toggle" id="filters-toggle" aria-expanded="false" aria-controls="facets">Filters<span class="count" id="filter-count"></span></button>
-  </div>
-
+<div class="facets-wrap">
   <div class="facets" id="facets" hidden>
     ${chipGroup('Protein', 'protein', proteins)}
     ${chipGroup('Course', 'course', courses)}
@@ -205,29 +254,28 @@ export function renderIndex(recipes) {
           <option value="protein">Most protein</option>
           <option value="rating">Highest rated</option>
         </select>
-        <button type="button" class="btn-quiet" id="reset">Clear</button>
+        <button type="button" class="btn btn-quiet" id="reset">Clear</button>
       </div>
     </div>
   </div>
 </div>
 
-<p class="result-count" id="result-count" role="status">${count} ${count === 1 ? 'recipe' : 'recipes'}</p>
-
-<ul class="cards" id="cards">
+<main class="wrap index-main">
+  <p class="result-count" id="result-count" role="status">${count} ${plural}</p>
+  <ul class="cards" id="cards">
 ${sorted.map(card)}
-</ul>
+  </ul>
+  <p class="empty" id="empty" hidden>Nothing matches that. Try clearing a filter.</p>
+</main>
 
-<p class="empty" id="empty" hidden>Nothing matches that. Try clearing a filter.</p>
-
-<footer class="site-footer">
-  <p>${count} ${count === 1 ? 'recipe' : 'recipes'}. Add another by asking Claude in the repo.</p>
+<footer class="site-footer wrap">
+  <p>${count} ${plural}. Add another by asking Claude in the repo.</p>
 </footer>
-</div>
 <p class="toast" id="toast" role="status" hidden></p>`;
 
   return layout({
     title: SITE_TITLE,
-    description: `A personal collection of ${count} ${count === 1 ? 'recipe' : 'recipes'}.`,
+    description: `A personal collection of ${count} ${plural}.`,
     root: '',
     bodyClass: 'page-index',
     script: 'app.js',
@@ -239,42 +287,9 @@ ${sorted.map(card)}
 
 const SOURCE_FLAG = {
   label: 'From the label',
-  calculated: 'Calculated from ingredients',
+  calculated: 'Calculated',
   estimated: 'Estimated',
 };
-
-function nutritionSection(recipe) {
-  const { nutrition, servingSizeG } = recipe;
-  const perServingHeader = servingSizeG ? `Per serving (${servingSizeG} g)` : 'Per serving';
-
-  return html`<section class="section" id="nutrition">
-  <div class="section-head"><h2>Nutrition</h2></div>
-  <p class="nutrition-source">
-    <span class="flag" data-source="${nutrition.source}">${SOURCE_FLAG[nutrition.source]}</span>
-    ${nutrition.source === 'estimated'
-      ? 'Worked out from the ingredients rather than measured, so treat it as a guide.'
-      : 'Taken from the source rather than estimated.'}
-  </p>
-  <table class="nutrition-table">
-    <thead>
-      <tr><th scope="col">Nutrient</th><th scope="col">${perServingHeader}</th><th scope="col">Per 100 g</th></tr>
-    </thead>
-    <tbody>
-      ${NUTRIENT_LABELS.map((row) => html`<tr${raw(row.sub ? ' class="sub"' : '')}>
-        <th scope="row">${row.label}</th>
-        <td>${formatNutrient(nutrition.perServing[row.key], row.unit)}</td>
-        <td>${formatNutrient(nutrition.per100g[row.key], row.unit)}</td>
-      </tr>`)}
-    </tbody>
-  </table>
-  ${nutrition.assumptions
-    ? html`<details class="nutrition-assumptions">
-        <summary>What this assumes</summary>
-        <p>${nutrition.assumptions}</p>
-      </details>`
-    : ''}
-</section>`;
-}
 
 function formatNutrient(value, unit) {
   if (value === null || value === undefined) return '';
@@ -282,50 +297,137 @@ function formatNutrient(value, unit) {
   return `${rounded} ${unit}`;
 }
 
-function ingredientsSection(recipe) {
-  return html`<section class="section" id="ingredients">
-  <div class="section-head">
-    <h2>Ingredients</h2>
-    <div class="scaler" id="scaler" data-base-servings="${recipe.servings}" data-yield-word="${yieldWord(recipe)}">
-      <span class="scaler-label">${yieldWord(recipe)}</span>
-      <button type="button" data-step="-1" aria-label="Fewer servings">&minus;</button>
-      <output id="servings-out" aria-live="polite">${recipe.servings}</output>
-      <button type="button" data-step="1" aria-label="More servings">+</button>
-      <button type="button" class="reset" id="scaler-reset" hidden>Reset</button>
+function hero(recipe) {
+  const kicker = [recipe.course[0], recipe.cuisine].filter(Boolean).map(titleCase).join(' · ');
+  const chips = [
+    `${yieldWord(recipe)} ${recipe.servings}`,
+    formatMinutes(recipe.totalMinutes),
+    recipe.cuisine,
+    recipe.mainProtein === 'none' ? null : titleCase(recipe.mainProtein),
+    titleCase(recipe.difficulty),
+  ].filter(Boolean);
+
+  return html`<section class="hero">
+  <div class="hero-inner">
+    <div class="hero-main">
+      <p class="eyebrow"><span class="eyebrow-bar" aria-hidden="true"></span>${kicker}</p>
+      <h1>${recipe.title}</h1>
+      <p class="hero-blurb">${recipe.description}</p>
     </div>
-  </div>
-  ${recipe.ingredients.map((group) => html`<div class="ingredient-group">
-    ${group.group ? html`<h3>${group.group}</h3>` : ''}
-    <ul class="ingredients-list">
-      ${group.items.map((item) => {
-        const line = formatIngredient(item, 1);
-        const amount = formatAmount(item, 1);
-        return html`<li
-          data-quantity="${item.quantity ?? ''}"
-          data-unit="${item.unit ?? ''}"
-          data-item="${item.item}"
-          data-raw="${item.raw}">
-          <span class="ing-amount">${amount}</span>
-          <span class="ing-text">${amount ? item.item : line.text}${item.note ? html`<span class="ing-note">, ${item.note}</span>` : ''}</span>
-        </li>`;
-      })}
+    <ul class="hero-meta">
+      <li class="meta-chip" id="serves-pill">${yieldWord(recipe)} ${recipe.servings}</li>
+      ${chips.slice(1).map((chip) => html`<li class="meta-chip">${chip}</li>`)}
+      ${recipe.rating ? html`<li class="meta-chip meta-chip-rating">${'★'.repeat(recipe.rating)}</li>` : ''}
     </ul>
-  </div>`)}
+  </div>
 </section>`;
 }
 
+/** The other recipes, as a scrolling strip. Real links, so it works without script. */
+function pillRow(recipe, all) {
+  if (all.length < 2) return '';
+  return html`<nav class="pill-row" aria-label="Recipes">
+  <ul>
+    ${all.map((other) => html`<li>
+      <a class="pill${other.id === recipe.id ? ' is-current' : ''}" href="../${other.id}/"${other.id === recipe.id ? raw(' aria-current="page"') : ''}>
+        <span class="pill-name">${other.title}</span>
+        <span class="pill-time">${formatMinutes(other.totalMinutes)}</span>
+      </a>
+    </li>`)}
+  </ul>
+</nav>`;
+}
+
+function ingredientsPanel(recipe) {
+  return html`<aside class="panel ingredients-panel">
+  <div class="panel-head">
+    <h2>Ingredients</h2>
+    <div class="scaler" id="scaler" data-base-servings="${recipe.servings}" data-yield-word="${yieldWord(recipe)}">
+      <span class="scaler-label">${yieldWord(recipe)}</span>
+      <button type="button" class="scaler-btn" data-step="-1" aria-label="Fewer servings">${icon(ICONS.minus, 16)}</button>
+      <output id="servings-out" aria-live="polite">${recipe.servings}</output>
+      <button type="button" class="scaler-btn" data-step="1" aria-label="More servings">${icon(ICONS.plus, 16)}</button>
+      <button type="button" class="btn btn-quiet scaler-reset" id="scaler-reset" hidden>Reset</button>
+    </div>
+  </div>
+
+  <div class="panel-body">
+    ${recipe.ingredients.map((group) => html`<div class="ingredient-group">
+      ${group.group ? html`<h3 class="group-label">${group.group}</h3>` : ''}
+      <ul class="ingredients-list">
+        ${group.items.map((item) => {
+          const line = formatIngredient(item, 1);
+          const amount = formatAmount(item, 1);
+          return html`<li>
+            <button type="button" class="ingredient" aria-pressed="false"
+              data-quantity="${item.quantity ?? ''}"
+              data-unit="${item.unit ?? ''}"
+              data-item="${item.item}"
+              data-raw="${item.raw}">
+              <span class="ing-amount">${amount}</span>
+              <span class="ing-text">${amount ? item.item : line.text}${item.note ? html`<span class="ing-note">, ${item.note}</span>` : ''}</span>
+            </button>
+          </li>`;
+        })}
+      </ul>
+    </div>`)}
+
+    ${recipe.equipment.length
+      ? html`<div class="equipment">
+          <p class="equipment-label">Equipment</p>
+          <p>${recipe.equipment.join(', ')}</p>
+        </div>`
+      : ''}
+  </div>
+</aside>`;
+}
+
 function methodSection(recipe) {
-  return html`<section class="section" id="method">
+  return html`<main class="method">
   <div class="section-head">
     <h2>Method</h2>
-    <button type="button" class="btn-primary" id="cook-mode">Cook mode</button>
+    <button type="button" class="btn btn-primary" id="cook-mode">${icon(ICONS.cook)}Cook mode</button>
   </div>
+  <p class="step-progress" id="step-progress">Tap a step to mark it done. 0 of ${recipe.steps.length} done.</p>
   <ol class="steps" id="steps">
-    ${recipe.steps.map((step) => html`<li>
-      <p>${step.text}</p>
-      ${step.minutes ? html`<span class="step-time">${formatMinutes(step.minutes)}</span>` : ''}
+    ${recipe.steps.map((step, index) => html`<li>
+      <button type="button" class="step" aria-pressed="false">
+        <span class="step-number">${index + 1}</span>
+        <span class="step-text">${step.text}</span>
+        ${step.minutes ? html`<span class="step-time">${icon(ICONS.clock, 14)}${formatMinutes(step.minutes)}</span>` : ''}
+      </button>
     </li>`)}
   </ol>
+</main>`;
+}
+
+function nutritionSection(recipe) {
+  const { nutrition, servingSizeG } = recipe;
+  const servingLabel = servingSizeG ? `Per serving (${servingSizeG} g)` : 'Per serving';
+  const estimated = nutrition.source === 'estimated';
+
+  return html`<section class="nutrition">
+  <div class="section-head">
+    <h2>Nutrition</h2>
+    <span class="basis-chip" data-source="${nutrition.source}">${SOURCE_FLAG[nutrition.source]}</span>
+  </div>
+  <div class="table-scroll">
+    <table class="nutrition-table">
+      <thead>
+        <tr><th scope="col">Nutrient</th><th scope="col">${servingLabel}</th><th scope="col">Per 100 g</th></tr>
+      </thead>
+      <tbody>
+        ${NUTRIENT_LABELS.map((row) => html`<tr${raw(row.sub ? ' class="sub"' : '')}>
+          <th scope="row">${row.label}</th>
+          <td class="figure">${formatNutrient(nutrition.perServing[row.key], row.unit)}</td>
+          <td class="figure figure-soft">${formatNutrient(nutrition.per100g[row.key], row.unit)}</td>
+        </tr>`)}
+      </tbody>
+    </table>
+  </div>
+  <p class="nutrition-foot">${estimated
+    ? 'Estimated. Worked out from the ingredients rather than measured, so treat it as a guide.'
+    : 'Taken from the source rather than estimated.'}</p>
 </section>`;
 }
 
@@ -334,10 +436,10 @@ function sourceLine(recipe) {
   const described = citation
     ? html`${citation}`
     : html`${{ photo: 'Photographed', family: 'Family recipe', original: 'Original', restaurant: 'From a restaurant' }[kind] ?? kind}`;
-  // Outbound links are deliberately not rendered as anchors: the CSP forbids external
-  // subresources, and a bare URL keeps provenance visible without inviting a click
-  // into something that may have rotted.
-  return html`<p class="source-line">Source: ${described}${url ? html` <span class="pill">${url}</span>` : ''}</p>`;
+  // Outbound links are deliberately not anchors: the CSP forbids external subresources,
+  // and a bare URL keeps provenance visible without inviting a click into something
+  // that may have rotted.
+  return html`<p>Source: ${described}${url ? html` <span class="url">${url}</span>` : ''}</p>`;
 }
 
 /** schema.org Recipe, so the page is importable into a recipe manager. */
@@ -379,67 +481,94 @@ function structuredData(recipe) {
   };
 }
 
-export function renderRecipe(recipe) {
+export function renderRecipe(recipe, allRecipes = []) {
+  if (!Array.isArray(allRecipes)) {
+    // Spreading a string here would quietly produce a pager full of single characters.
+    throw new TypeError('renderRecipe expects the recipe list as its second argument');
+  }
   const root = '../../';
-  const pills = [
-    formatMinutes(recipe.totalMinutes),
-    recipe.cuisine,
-    // "None" is not worth a pill on a baking recipe.
-    recipe.mainProtein === 'none' ? null : titleCase(recipe.mainProtein),
-    titleCase(recipe.difficulty),
-  ].filter(Boolean);
+  const all = [...allRecipes].sort((a, b) => a.title.localeCompare(b.title));
+  const index = all.findIndex((r) => r.id === recipe.id);
+  const previous = index > 0 ? all[index - 1] : null;
+  const next = index >= 0 && index < all.length - 1 ? all[index + 1] : null;
 
-  const body = html`<div class="wrap page-recipe">
-<a class="back" href="${root}">All recipes</a>
+  const pager = all.length > 1
+    ? html`<div class="pager">
+        ${previous
+          ? html`<a class="pager-btn" href="../${previous.id}/" rel="prev" aria-label="Previous recipe, ${previous.title}">${icon(ICONS.left, 20)}</a>`
+          : html`<span class="pager-btn is-disabled" aria-hidden="true">${icon(ICONS.left, 20)}</span>`}
+        <span class="pager-count">${index + 1} of ${all.length}</span>
+        ${next
+          ? html`<a class="pager-btn" href="../${next.id}/" rel="next" aria-label="Next recipe, ${next.title}">${icon(ICONS.right, 20)}</a>`
+          : html`<span class="pager-btn is-disabled" aria-hidden="true">${icon(ICONS.right, 20)}</span>`}
+      </div>`
+    : '';
 
-<header class="recipe-header">
-  <h1>${recipe.title}</h1>
-  <p class="recipe-desc">${recipe.description}</p>
-  <ul class="recipe-meta">
-    <li class="pill" id="serves-pill">${yieldWord(recipe)} ${recipe.servings}</li>
-    ${pills.map((pill) => html`<li class="pill">${pill}</li>`)}
-    ${recipe.rating ? html`<li class="pill pill-accent">${'\u2605'.repeat(recipe.rating)}</li>` : ''}
-  </ul>
+  const body = html`<header class="site-header">
+  <div class="header-inner">
+    <a class="brand" href="${root}">
+      <span class="brand-dot" aria-hidden="true"></span>
+      <span class="brand-name">${SITE_TITLE}</span>
+    </a>
+    <form class="search-form" action="${root}" method="get" role="search">
+      <span class="search-icon" aria-hidden="true">${icon(ICONS.search)}</span>
+      <label class="visually-hidden" for="q">Search recipes</label>
+      <input class="search" id="q" name="q" type="search" placeholder="Search recipes"
+        autocomplete="off" enterkeyhint="search" spellcheck="false">
+    </form>
+    <div class="header-actions">${pager}</div>
+  </div>
+  ${pillRow(recipe, all)}
 </header>
 
-${recipe.image
-    ? html`<figure class="recipe-figure">
-        <img src="${root}${recipe.image.file}" alt="${recipe.image.alt}" width="1600" height="1000" decoding="async">
-        ${recipe.image.credit ? html`<figcaption>${recipe.image.credit}${recipe.image.licence ? html` (${recipe.image.licence})` : ''}</figcaption>` : ''}
-      </figure>`
-    : ''}
+${hero(recipe)}
 
-${ingredientsSection(recipe)}
-${methodSection(recipe)}
-${nutritionSection(recipe)}
-
-${recipe.notes.length
-    ? html`<section class="section" id="notes">
-        <div class="section-head"><h2>Notes</h2></div>
-        <ul class="notes-list">${recipe.notes.map((note) => html`<li>${note}</li>`)}</ul>
-      </section>`
-    : ''}
-
-<section class="section" id="source">
-  ${sourceLine(recipe)}
-  ${recipe.equipment.length ? html`<p class="source-line">Equipment: ${recipe.equipment.join(', ')}</p>` : ''}
-</section>
+<div class="recipe-body wrap">
+  ${ingredientsPanel(recipe)}
+  ${methodSection(recipe)}
 </div>
+
+<div class="recipe-lower wrap">
+  ${nutritionSection(recipe)}
+  <div class="aside-stack">
+    ${recipe.nutrition.assumptions
+      ? html`<div class="assumptions">
+          <h3>What this assumes</h3>
+          <p>${recipe.nutrition.assumptions}</p>
+        </div>`
+      : ''}
+    ${recipe.notes.length
+      ? html`<div class="notes-block">
+          <h2>Notes</h2>
+          <ul class="notes-list">${recipe.notes.map((note) => html`<li><span class="note-dot" aria-hidden="true"></span><span>${note}</span></li>`)}</ul>
+        </div>`
+      : ''}
+  </div>
+</div>
+
+<footer class="recipe-footer wrap">
+  ${sourceLine(recipe)}
+  ${next ? html`<a class="btn btn-primary" href="../${next.id}/" rel="next">Next recipe ${icon(ICONS.right, 16)}</a>` : ''}
+</footer>
 
 <dialog class="cook" id="cook" aria-label="Cook mode">
   <div class="cook-inner">
     <div class="cook-top">
+      <div class="cook-heading">
+        <p class="cook-label">Cook mode</p>
+        <p class="cook-title">${recipe.title}</p>
+      </div>
       <p class="cook-progress" id="cook-progress"></p>
       <span class="cook-awake" id="cook-awake" hidden>Screen kept on</span>
-      <button type="button" class="btn-quiet" id="cook-close">Done</button>
+      <button type="button" class="btn btn-quiet" id="cook-close">Done</button>
     </div>
     <div class="cook-body">
       <p class="cook-step" id="cook-step"></p>
       <p class="cook-step-time" id="cook-step-time"></p>
     </div>
     <div class="cook-nav">
-      <button type="button" id="cook-prev">Back</button>
-      <button type="button" class="btn-primary" id="cook-next">Next</button>
+      <button type="button" class="btn" id="cook-prev">${icon(ICONS.left, 18)}Back</button>
+      <button type="button" class="btn btn-primary" id="cook-next">Next${icon(ICONS.right, 18)}</button>
     </div>
   </div>
 </dialog>
@@ -453,7 +582,7 @@ ${jsonLd(structuredData(recipe))}
     title: `${recipe.title} | ${SITE_TITLE}`,
     description: recipe.description,
     root,
-    bodyClass: 'page-recipe-body',
+    bodyClass: 'page-recipe',
     script: 'recipe.js',
     head,
     body,
@@ -468,10 +597,10 @@ export function renderNotFound() {
     root: '',
     bodyClass: 'page-index',
     script: 'app.js',
-    body: html`<div class="wrap">
-  <header class="site-header"><h1 class="site-title">Not found</h1></header>
+    body: html`${siteHeader({ root: '', count: 0, live: false })}
+<main class="wrap index-main">
   <p class="empty">That recipe does not exist. <a href="./">Back to all recipes</a>.</p>
-</div>`,
+</main>`,
   });
 }
 

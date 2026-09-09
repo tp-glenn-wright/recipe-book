@@ -1,7 +1,8 @@
-// Recipe page: the servings scaler and cook mode.
+// Recipe page: the servings scaler, tick-off state, and cook mode.
 //
-// Both are progressive enhancement. The page is complete and readable before this file
-// runs, and everything here updates existing nodes via textContent.
+// All of it is progressive enhancement. The page is complete and readable before this
+// file runs, and everything here updates existing nodes via textContent and
+// aria-pressed. Nothing is built from a string.
 
 import { formatAmount } from './scale.js';
 import { registerServiceWorker, toast } from './ui.js';
@@ -12,7 +13,7 @@ const scaler = document.getElementById('scaler');
 const servingsOut = document.getElementById('servings-out');
 const servesPill = document.getElementById('serves-pill');
 const resetScale = document.getElementById('scaler-reset');
-const ingredientItems = Array.from(document.querySelectorAll('.ingredients-list li'));
+const ingredientButtons = Array.from(document.querySelectorAll('.ingredient'));
 
 const baseServings = scaler ? Number(scaler.dataset.baseServings) : 0;
 // "Serves" for a meal, "Makes" for a tray of biscuits. Decided at build time.
@@ -20,22 +21,22 @@ const yieldWord = scaler?.dataset.yieldWord ?? 'Serves';
 let servings = baseServings;
 
 /** Reconstruct the ingredient record the build put into data-* attributes. */
-function itemFrom(li) {
+function itemFrom(button) {
   return {
-    quantity: li.dataset.quantity === '' ? null : Number(li.dataset.quantity),
-    unit: li.dataset.unit || null,
-    item: li.dataset.item,
+    quantity: button.dataset.quantity === '' ? null : Number(button.dataset.quantity),
+    unit: button.dataset.unit || null,
+    item: button.dataset.item,
     note: null,
-    raw: li.dataset.raw,
+    raw: button.dataset.raw,
   };
 }
 
 function renderScale() {
   const factor = servings / baseServings;
-  for (const li of ingredientItems) {
-    const amount = li.querySelector('.ing-amount');
-    if (!amount || li.dataset.quantity === '') continue;
-    amount.textContent = formatAmount(itemFrom(li), factor);
+  for (const button of ingredientButtons) {
+    const amount = button.querySelector('.ing-amount');
+    if (!amount || button.dataset.quantity === '') continue;
+    amount.textContent = formatAmount(itemFrom(button), factor);
   }
   servingsOut.textContent = String(servings);
   if (servesPill) servesPill.textContent = `${yieldWord} ${servings}`;
@@ -51,22 +52,52 @@ function setServings(next) {
 
 if (scaler && baseServings > 0) {
   scaler.addEventListener('click', (event) => {
-    const button = event.target.closest('button[data-step]');
-    if (button) {
-      setServings(servings + Number(button.dataset.step));
+    const stepButton = event.target.closest('button[data-step]');
+    if (stepButton) {
+      setServings(servings + Number(stepButton.dataset.step));
       return;
     }
     if (event.target.closest('#scaler-reset')) setServings(baseServings);
   });
 }
 
+/* ---------- ticking off ----------
+ * Ingredients and steps are both toggle buttons, so aria-pressed carries the state and
+ * a screen reader announces it. Nothing is persisted: a half-ticked recipe is state
+ * about right now, not about the recipe, and finding yesterday's ticks still there
+ * would be worse than starting clean. */
+
+function toggle(button) {
+  const pressed = button.getAttribute('aria-pressed') === 'true';
+  button.setAttribute('aria-pressed', String(!pressed));
+}
+
+for (const button of ingredientButtons) {
+  button.addEventListener('click', () => toggle(button));
+}
+
+const stepButtons = Array.from(document.querySelectorAll('.step'));
+const stepProgress = document.getElementById('step-progress');
+
+function renderProgress() {
+  if (!stepProgress) return;
+  const done = stepButtons.filter((b) => b.getAttribute('aria-pressed') === 'true').length;
+  stepProgress.textContent = `Tap a step to mark it done. ${done} of ${stepButtons.length} done.`;
+}
+
+for (const button of stepButtons) {
+  button.addEventListener('click', () => {
+    toggle(button);
+    renderProgress();
+  });
+}
+
 /* ---------- cook mode ----------
- * One step at a time in large type, with the screen held awake. The steps are read
- * out of the page rather than duplicated into a data structure. */
+ * One step at a time in large type, with the screen held awake. The steps are read out
+ * of the page rather than duplicated into a data structure. */
 
 const dialog = document.getElementById('cook');
 const openButton = document.getElementById('cook-mode');
-const stepNodes = Array.from(document.querySelectorAll('#steps li'));
 const stepText = document.getElementById('cook-step');
 const stepTime = document.getElementById('cook-step-time');
 const progress = document.getElementById('cook-progress');
@@ -78,9 +109,9 @@ const closeButton = document.getElementById('cook-close');
 let current = 0;
 let wakeLock = null;
 
-const steps = stepNodes.map((li) => ({
-  text: li.querySelector('p')?.textContent ?? '',
-  time: li.querySelector('.step-time')?.textContent ?? '',
+const steps = stepButtons.map((button) => ({
+  text: button.querySelector('.step-text')?.textContent ?? '',
+  time: button.querySelector('.step-time')?.textContent.trim() ?? '',
 }));
 
 function renderStep() {
@@ -117,23 +148,29 @@ async function releaseWakeLock() {
   awakeFlag.hidden = true;
 }
 
-function openCookMode() {
+openButton?.addEventListener('click', () => {
   if (!steps.length) return;
-  current = 0;
+  // Pick up where the ticking got to, so cook mode and the list agree.
+  const firstUndone = stepButtons.findIndex((b) => b.getAttribute('aria-pressed') !== 'true');
+  current = firstUndone === -1 ? 0 : firstUndone;
   renderStep();
   dialog.showModal();
   acquireWakeLock();
-}
+});
 
-openButton?.addEventListener('click', openCookMode);
 closeButton?.addEventListener('click', () => dialog.close());
+
 prevButton?.addEventListener('click', () => {
   if (current > 0) {
     current -= 1;
     renderStep();
   }
 });
+
 nextButton?.addEventListener('click', () => {
+  // Advancing past a step marks it done, so the list reflects the cook.
+  stepButtons[current]?.setAttribute('aria-pressed', 'true');
+  renderProgress();
   if (current < steps.length - 1) {
     current += 1;
     renderStep();
@@ -151,7 +188,7 @@ document.addEventListener('visibilitychange', () => {
   if (document.visibilityState === 'visible' && dialog?.open && !wakeLock) acquireWakeLock();
 });
 
-// Swiping and arrow keys both feel natural once you are stood at the bench.
+// Arrow keys feel natural once you are stood at the bench.
 dialog?.addEventListener('keydown', (event) => {
   if (event.key === 'ArrowRight') nextButton.click();
   if (event.key === 'ArrowLeft') prevButton.click();

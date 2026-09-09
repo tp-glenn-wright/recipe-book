@@ -1,0 +1,65 @@
+{
+  "schemaVersion": 1,
+  "id": "penang-chicken",
+  "title": "Penang Chicken",
+  "description": "Penang curry paste doing the heavy lifting, with evaporated milk and coconut essence standing in for coconut milk. Get the vegetables just cooked before the sauce goes in, because they will not firm up again.",
+  "image": null,
+  "source": { "kind": "photo", "citation": null, "url": null },
+  "added": "2026-09-09",
+  "updated": "2026-09-09",
+  "cuisine": "Malaysian",
+  "course": ["main", "dinner"],
+  "mainProtein": "chicken",
+  "tags": ["weeknight", "high-protein", "stovetop"],
+  "rating": null,
+  "difficulty": "easy",
+  "prepMinutes": 20,
+  "cookMinutes": 15,
+  "totalMinutes": 35,
+  "servings": 4,
+  "servingSizeG": 375,
+  "equipment": ["large non-stick wok or frying pan", "small mixing bowl"],
+  "ingredients": [
+    {
+      "group": null,
+      "items": [
+        { "quantity": 500, "unit": "g", "item": "skinless chicken breasts", "note": "cut into thin strips", "raw": "500 g skinless chicken breasts" },
+        { "quantity": 1, "unit": null, "item": "medium onion", "note": "quartered then thinly sliced", "raw": "1 medium sized onion" },
+        { "quantity": null, "unit": null, "item": "cooking spray", "note": null, "raw": "cooking spray" },
+        { "quantity": 1, "unit": "tsp", "item": "crushed garlic", "note": "from a jar", "raw": "1 teaspoon crushed garlic (in jar)" },
+        { "quantity": 1, "unit": "tsp", "item": "crushed ginger", "note": "from a jar", "raw": "1 teaspoon crushed ginger (in jar)" },
+        { "quantity": 1, "unit": "cup", "item": "fresh green beans", "note": "cut in half", "raw": "1 cup fresh green beans cut in half" },
+        { "quantity": 2, "unit": "cup", "item": "zucchini", "note": "sliced", "raw": "2 cups zucchini sliced" },
+        { "quantity": 2, "unit": "cup", "item": "small cauliflower florets", "note": null, "raw": "2 cups small cauliflower florets" },
+        { "quantity": 3, "unit": "tsp", "item": "Penang curry paste", "note": "from a jar", "raw": "3 teaspoons Penang paste (in jar)" },
+        { "quantity": 2, "unit": "tsp", "item": "fish sauce", "note": null, "raw": "2 teaspoons fish sauce" },
+        { "quantity": 1, "unit": "tbsp", "item": "sugar", "note": null, "raw": "1 tablespoon sugar" },
+        { "quantity": 1, "unit": "tbsp", "item": "fresh basil", "note": "chopped", "raw": "1 tablespoon fresh basil chopped" },
+        { "quantity": 2, "unit": "tbsp", "item": "cornflour", "note": null, "raw": "2 tablespoons cornflour" },
+        { "quantity": 375, "unit": "ml", "item": "evaporated light milk", "note": null, "raw": "1 x 375 ml can evaporated light milk" },
+        { "quantity": 1, "unit": "tsp", "item": "imitation coconut essence", "note": null, "raw": "1 teaspoon imitation coconut essence" },
+        { "quantity": 20, "unit": "g", "item": "unsalted peanuts", "note": "chopped, optional", "raw": "2 1/2 tablespoons (20 g) chopped unsalted peanuts (optional)" }
+      ]
+    }
+  ],
+  "steps": [
+    { "text": "Cut the chicken into thin strips. Cut the onion into quarters, then slice thinly.", "minutes": null },
+    { "text": "Coat a large non-stick wok or frying pan generously with cooking spray and saute the garlic, ginger and chicken until the chicken is nearly cooked. Remove from the pan and set aside.", "minutes": 6 },
+    { "text": "Coat the pan again with cooking spray and saute the onion, beans, zucchini and cauliflower for 2 minutes.", "minutes": 2 },
+    { "text": "Add the Penang paste, stir well and cook for 3 to 5 minutes, until the vegetables are just cooked.", "minutes": 5 },
+    { "text": "Add the fish sauce, sugar and basil, then return the chicken to the pan.", "minutes": null },
+    { "text": "Combine the cornflour, evaporated milk and coconut essence in a small bowl, pour it into the pan and stir continuously until boiling.", "minutes": 4 },
+    { "text": "Serve with basmati rice or noodles, scattering the chopped peanuts over each serve if you are using them.", "minutes": null }
+  ],
+  "notes": [
+    "The source offers lean rump steak, butterfly pork steaks, lean lamb leg steaks or 400 g diced tofu in place of the chicken.",
+    "Leaving the peanuts out drops the fat by 2.3 g a serve.",
+    "This is a big serve at around 375 g before rice, because 500 g of chicken and a can of milk stretch across five cups of vegetables."
+  ],
+  "nutrition": {
+    "source": "label",
+    "assumptions": "Read off the printed panel, chicken column. That panel is a five column table photographed at an angle, so the row alignment was resolved two ways before being trusted: the energy figure balances against the macros to within a calorie, and an independent calculation from the ingredient masses lands on the same protein, fat and sodium. Worth checking against the page. Serving size of 375 g is worked out from the ingredient masses, roughly 1.68 kg reducing about 10% over four servings, and excludes the rice; the per-100 g column is derived from that.",
+    "perServing": { "kj": 1329, "kcal": 316, "proteinG": 40.3, "fatG": 7.5, "saturatedFatG": 2.5, "carbsG": 21.8, "sugarsG": 17.7, "fibreG": 2.8, "sodiumMg": 417 },
+    "per100g": { "kj": 354, "kcal": 84.3, "proteinG": 10.7, "fatG": 2, "saturatedFatG": 0.67, "carbsG": 5.8, "sugarsG": 4.7, "fibreG": 0.75, "sodiumMg": 111 }
+  }
+}

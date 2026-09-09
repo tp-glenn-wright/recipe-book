@@ -19,6 +19,15 @@ const DIST = 'dist';
 const SRC = 'src';
 const BROWSER_SCRIPTS = ['app.js', 'recipe.js', 'scale.js', 'ui.js'];
 
+/* Self-hosted from the design bundle, latin subset only. The CSP allows font-src
+ * 'self' and nothing else, so these have to ship with the site. */
+const FONTS = [
+  'figtree-600.woff2',
+  'figtree-700.woff2',
+  'open-sans-400.woff2',
+  'open-sans-600.woff2',
+];
+
 const ESC = String.fromCharCode(27);
 const useColour = process.stdout.isTTY && !process.env.NO_COLOR;
 const c = (code, s) => (useColour ? `${ESC}[${code}m${s}${ESC}[0m` : s);
@@ -42,7 +51,9 @@ function urlsFor(recipes, images) {
     './',
     './404.html',
     './manifest.webmanifest',
+    './assets/tokens.css',
     './assets/style.css',
+    ...FONTS.map((font) => `./assets/fonts/${font}`),
     ...BROWSER_SCRIPTS.map((f) => `./assets/${f}`),
     ...ICON_SIZES.map((size) => `./assets/icon-${size}.png`),
   ];
@@ -74,11 +85,17 @@ async function main() {
   await emit('index.html', renderIndex(recipes));
   await emit('404.html', renderNotFound());
   for (const recipe of recipes) {
-    await emit(path.join('recipes', recipe.id, 'index.html'), renderRecipe(recipe));
+    // The whole list goes in so each page can render the pill strip and prev/next.
+    await emit(path.join('recipes', recipe.id, 'index.html'), renderRecipe(recipe, recipes));
   }
 
   // Assets. Stable filenames, because the service worker version is what busts caches.
+  // tokens.css is the design system as issued; style.css is this site's use of it.
+  await emit('assets/tokens.css', await readFile(path.join(SRC, 'tokens.css')));
   await emit('assets/style.css', await readFile(path.join(SRC, 'style.css')));
+  for (const font of FONTS) {
+    await emit(`assets/fonts/${font}`, await readFile(path.join(SRC, 'fonts', font)));
+  }
   for (const script of BROWSER_SCRIPTS) {
     await emit(`assets/${script}`, await readFile(path.join(SRC, script)));
   }
@@ -102,8 +119,8 @@ async function main() {
     scope: './',
     display: 'standalone',
     orientation: 'portrait',
-    background_color: '#faf8f5',
-    theme_color: '#a8411b',
+    background_color: '#f0f6fb',
+    theme_color: '#135487',
     icons: [
       { src: './assets/icon-192.png', sizes: '192x192', type: 'image/png', purpose: 'any' },
       { src: './assets/icon-512.png', sizes: '512x512', type: 'image/png', purpose: 'any' },
