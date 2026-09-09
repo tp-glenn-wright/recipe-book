@@ -2,21 +2,23 @@
  *
  * Two deliberate structures here.
  *
- * First, an `--rb-*` layer sits between the brand tokens and every rule below. The
- * brand tokens are fixed values: navy is navy, and it does double duty as both a
- * heading colour and the hero background. Those two need to move in opposite
- * directions in dark mode, so remapping the brand tokens would be wrong. Instead this
- * layer names what each colour is *for*, points at the brand tokens in light mode, and
- * gets its own values in dark. tokens.css stays byte-comparable with the canvas.
+ * First, an `--rb-*` layer sits between the brand tokens and every rule below. It names
+ * what each colour is *for* and points at the brand tokens, which keeps tokens.css
+ * byte-comparable with the canvas and means any future change to a colour happens in
+ * one place rather than scattered through the rules.
  *
  * Second, everything is mobile-first. The design canvas is desktop only, so the base
  * rules here are a phone at arm's length on a bench, and the two-column layout is
  * added at a breakpoint rather than taken away at one.
  *
- * Deviations from the canvas, all for legibility while cooking rather than taste:
- *   - body text is 16px weight 400, not 14px weight 300
- *   - ingredient rows are 16px, not 15.5px
- * Every other size, colour, radius and shadow is the canvas value.
+ * Colour is the canvas palette exactly, light only. There is no dark mode: the canvas
+ * does not define one, and matching the design was the priority. See the note on the
+ * text colours below for the contrast consequence.
+ *
+ * The one remaining deviation is type size, for legibility while cooking rather than
+ * taste: body text is 16px weight 400 rather than 14px weight 300, and ingredient rows
+ * are 16px rather than 15.5px. Every other size, colour, radius and shadow is the
+ * canvas value.
  */
 
 :root {
@@ -33,27 +35,25 @@
   --rb-heading:    var(--color-navy);
   --rb-figure:     var(--color-ink-darkest);
 
-  /* Four brand values are darkened here, and only where text depends on them. Measured
-   * against #E8EFF6, the lightest surface text sits on, they fail WCAG AA as issued:
+  /* These four point straight at the canvas values, on Glenn's instruction to match the
+   * design file exactly. Recorded here rather than left unstated: measured against
+   * #E8EFF6, the lightest surface text sits on, they fall below WCAG AA.
    *
    *   --text-secondary  #808285  3.54:1   secondary body text
    *   --text-tertiary   #A0A4A8  2.32:1   ingredient notes, card meta
    *   --color-ink-blue  #2A93D5  3.11:1   the 12px uppercase group labels
    *   --color-blue      #3192CF  3.15:1   links, and white labels on the button fill
    *
-   * The hue is preserved and only lightness moves, so they still read as the same
-   * palette. Decorative uses of the blue keep the brand value: see .brand-dot and
-   * .note-dot below, which carry no text. The two greys are pulled further apart than
-   * the minimum, because at the AA threshold they converge into the same grey and the
-   * secondary/tertiary distinction disappears. */
-  --rb-ink-soft:   #5A5C5F;  /* was --text-secondary  */
-  --rb-ink-faint:  #6B6C6F;  /* was --text-tertiary   */
-  --rb-label:      #2172A6;  /* was --color-ink-blue  */
+   * AA for normal text is 4.5:1. The white-on-blue button pairing is 3.42:1. If that
+   * ever wants fixing, the accessible variants that keep the same hue are #5A5C5F,
+   * #6B6C6F, #2172A6 and #2672A2, and the navy already passes at 7.94:1. */
+  --rb-ink-soft:   var(--text-secondary);
+  --rb-ink-faint:  var(--text-tertiary);
+  --rb-label:      var(--color-ink-blue);
 
-  --rb-accent:        #2672A2;  /* was --interactive-primary */
+  --rb-accent:        var(--interactive-primary);
   --rb-accent-hover:  var(--interactive-primary-hover);
   --rb-accent-ink:    var(--color-white);
-  --rb-accent-plain:  var(--color-blue);  /* undarkened, for decoration only */
 
   --rb-hero-bg:    var(--color-navy);
   --rb-hero-ink:   var(--color-white);
@@ -81,48 +81,6 @@
   --rb-tap:        44px;
   --rb-gutter:     1rem;
   --rb-measure:    68ch;
-}
-
-/* Dark palette, derived from the navy rather than invented: the grounds are the brand
- * navy taken down in lightness, and the blues are lifted until every pairing below
- * clears WCAG AA at its size. The hero sits *above* the page in dark mode, because a
- * navy band on a near-black page reads as nothing at all. */
-@media (prefers-color-scheme: dark) {
-  :root {
-    color-scheme: dark;
-
-    --rb-page:       #0B1622;
-    --rb-card:       #14283A;
-    --rb-panel:      #182F42;
-    --rb-muted:      #1F3B52;
-    --rb-line:       #294B67;
-    --rb-line-soft:  #1F3B52;
-
-    --rb-ink:        #E6EEF6;
-    --rb-ink-soft:   #A3B7CA;
-    --rb-ink-faint:  #8199AE;
-    --rb-heading:    #9CCFF0;
-    --rb-label:      #6FB8E4;
-    --rb-figure:     #DCE9F5;
-
-    --rb-accent:        #4FA6DC;
-    --rb-accent-hover:  #6FB8E4;
-    --rb-accent-ink:    #07131E;
-    --rb-accent-plain:  #4FA6DC;
-
-    --rb-hero-bg:    #16324A;
-    --rb-hero-ink:   #F2F7FC;
-    --rb-hero-soft:  #C3D6E6;
-    --rb-hero-line:  rgba(195, 214, 230, 0.35);
-
-    --rb-chip-bg:    #24435E;
-    --rb-chip-ink:   #C8E2F6;
-    --rb-warn-bg:    #3A2F10;
-    --rb-warn-ink:   #F0CF6B;
-
-    --rb-shadow:      0 2px 8px rgba(0, 0, 0, 0.45);
-    --rb-shadow-lift: 0 4px 16px rgba(0, 0, 0, 0.5);
-  }
 }
 
 *, *::before, *::after { box-sizing: border-box; }
@@ -210,6 +168,8 @@ a { color: var(--rb-accent); text-underline-offset: 2px; }
   transition: var(--transition-default);
 }
 .btn:hover { border-color: var(--rb-accent); }
+.btn:disabled { opacity: var(--opacity-disabled); cursor: default; }
+.btn:disabled:hover { border-color: var(--rb-line); }
 .btn-primary {
   border-color: transparent;
   background: var(--rb-accent);
@@ -256,7 +216,7 @@ a { color: var(--rb-accent); text-underline-offset: 2px; }
   flex: 0 0 auto;
   width: 10px; height: 10px;
   border-radius: var(--radius-full);
-  background: var(--rb-accent-plain);
+  background: var(--rb-accent);
   box-shadow: 0 0 0 4px rgba(49, 146, 207, 0.18);
 }
 .brand-name {
@@ -599,6 +559,7 @@ a { color: var(--rb-accent); text-underline-offset: 2px; }
 .recipe-body,
 .recipe-lower {
   display: grid;
+  grid-template-columns: minmax(0, 1fr);  /* see the note on .cook-inner */
   gap: var(--space-8);
   align-items: start;
   padding-top: var(--space-7);
@@ -835,7 +796,7 @@ a { color: var(--rb-accent); text-underline-offset: 2px; }
   width: 6px; height: 6px;
   margin-top: 0.6em;
   border-radius: var(--radius-full);
-  background: var(--rb-accent-plain);
+  background: var(--rb-accent);
 }
 .notes-list span:last-child { text-wrap: pretty; }
 
@@ -876,19 +837,31 @@ a { color: var(--rb-accent); text-underline-offset: 2px; }
 .cook::backdrop { background: var(--rb-card); }
 .cook-inner {
   display: grid;
+  /* minmax(0, 1fr) rather than the default auto track. An auto track is sized by the
+   * min-content of its widest item, and the top bar's four nowrap children come to
+   * about 540px, so on a 412px phone every row was rendering wider than the screen and
+   * the Done button sat off it. */
+  grid-template-columns: minmax(0, 1fr);
   grid-template-rows: auto 1fr auto;
   height: 100dvh;
   gap: var(--space-4);
   padding: calc(var(--space-4) + env(safe-area-inset-top)) var(--space-5) calc(var(--space-4) + env(safe-area-inset-bottom));
 }
+
+/* Four things do not fit on one row on a phone, so the heading and Done take the first
+ * row and the status text takes the second. One row again as soon as there is width. */
 .cook-top {
-  display: flex;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
   align-items: center;
-  gap: var(--space-4);
+  gap: var(--space-2) var(--space-4);
   padding-bottom: var(--space-4);
   border-bottom: 1px solid var(--rb-line);
 }
-.cook-heading { min-width: 0; margin-right: auto; }
+.cook-heading { min-width: 0; grid-column: 1; grid-row: 1; }
+.cook-top .btn { grid-column: 2; grid-row: 1; }
+.cook-progress { grid-column: 1; grid-row: 2; }
+.cook-awake { grid-column: 2; grid-row: 2; justify-self: end; }
 .cook-label {
   font-family: var(--font-display);
   font-size: var(--text-sm);
@@ -916,7 +889,16 @@ a { color: var(--rb-accent); text-underline-offset: 2px; }
   color: var(--rb-accent);
   white-space: nowrap;
 }
-.cook-body { display: grid; align-content: center; gap: var(--space-4); overflow-y: auto; }
+/* Aligned to the top, not centred. Centring makes the step jump vertically every time
+ * you tap Next, because steps differ in length, and a one-line step ends up marooned in
+ * the middle of an empty screen. Top-aligned, it lands in the same place every time. */
+.cook-body {
+  display: grid;
+  align-content: start;
+  gap: var(--space-4);
+  padding-top: var(--space-6);
+  overflow-y: auto;
+}
 .cook-step {
   font-family: var(--font-display);
   font-size: clamp(1.5rem, 5.5vw, 2.25rem);
@@ -951,6 +933,11 @@ a { color: var(--rb-accent); text-underline-offset: 2px; }
 
 @media (min-width: 34rem) {
   :root { --rb-gutter: 1.5rem; }
+  .cook-top { grid-template-columns: minmax(0, 1fr) auto auto auto; }
+  .cook-heading { grid-row: 1; }
+  .cook-progress { grid-column: 2; grid-row: 1; }
+  .cook-awake { grid-column: 3; grid-row: 1; justify-self: auto; }
+  .cook-top .btn { grid-column: 4; grid-row: 1; }
   /* Once there is room, the search shares the header row rather than taking its own. */
   .header-inner { grid-template-columns: auto minmax(0, 480px) auto; }
   .search-form { grid-column: 2; grid-row: 1; }

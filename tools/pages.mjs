@@ -111,8 +111,7 @@ function layout({ title, description, root, bodyClass, script, head = '', body }
 <meta name="robots" content="noindex, nofollow">
 <title>${title}</title>
 <meta name="description" content="${description}">
-<meta name="theme-color" content="#135487" media="(prefers-color-scheme: light)">
-<meta name="theme-color" content="#0d1b27" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#135487">
 <link rel="preload" href="${root}assets/fonts/figtree-700.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="${root}assets/fonts/open-sans-400.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="${root}assets/tokens.css">
