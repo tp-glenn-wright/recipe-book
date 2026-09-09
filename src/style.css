@@ -1,0 +1,433 @@
+/* Recipe book styles.
+ *
+ * Mobile-first: every base rule targets a phone held one-handed, and the media
+ * queries only ever add. No framework, no webfonts, no external requests, which is
+ * what lets the Content-Security-Policy stay closed to everything but self.
+ *
+ * Colour lives in custom properties so light and dark share one set of rules. */
+
+:root {
+  color-scheme: light dark;
+
+  --bg: #faf8f5;
+  --surface: #ffffff;
+  --surface-sunk: #f3efe9;
+  --ink: #1c1a18;
+  --ink-soft: #5c554e;
+  --ink-faint: #8a8178;
+  --line: #e5ded4;
+  --accent: #a8411b;
+  --accent-ink: #ffffff;
+  --accent-soft: #fbeee7;
+  --shadow: 0 1px 2px rgb(28 26 24 / 6%), 0 4px 16px rgb(28 26 24 / 5%);
+
+  --radius: 14px;
+  --radius-sm: 9px;
+  --tap: 44px;
+  --measure: 62ch;
+
+  --serif: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, "Times New Roman", serif;
+  --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #16140f;
+    --surface: #201d18;
+    --surface-sunk: #100e0b;
+    --ink: #f1ece4;
+    --ink-soft: #b0a79b;
+    --ink-faint: #857c71;
+    --line: #322c24;
+    --accent: #f08a5d;
+    --accent-ink: #1c1a18;
+    --accent-soft: #2b2018;
+    --shadow: 0 1px 2px rgb(0 0 0 / 40%), 0 4px 16px rgb(0 0 0 / 30%);
+  }
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+
+/* An author `display` rule beats the user agent's [hidden] rule, which silently
+ * un-hides anything styled as grid or flex. Everything here toggles visibility with
+ * the hidden attribute, so make it authoritative once rather than per component. */
+[hidden] { display: none !important; }
+
+html { -webkit-text-size-adjust: 100%; }
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font: 16px/1.55 var(--sans);
+  /* Respect the notch and the home indicator without a library. */
+  padding: 0 max(1rem, env(safe-area-inset-left)) calc(2rem + env(safe-area-inset-bottom));
+  overflow-wrap: break-word;
+}
+
+h1, h2, h3 { font-family: var(--serif); font-weight: 600; line-height: 1.2; margin: 0; }
+h1 { font-size: 1.75rem; letter-spacing: -0.01em; }
+h2 { font-size: 1.25rem; }
+h3 { font-size: 1rem; }
+p { margin: 0; }
+ul, ol { margin: 0; padding: 0; }
+li { list-style: none; }
+img { max-width: 100%; display: block; }
+
+a { color: var(--accent); text-decoration-thickness: 1px; text-underline-offset: 2px; }
+
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 4px; }
+
+/* Labels that screen readers need and sighted users do not. */
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+.wrap { max-width: 68rem; margin: 0 auto; }
+
+/* Anything tappable clears 44px, because this gets used with one hand and wet fingers. */
+button, .btn, select, input {
+  font: inherit;
+  color: inherit;
+  min-height: var(--tap);
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--line);
+  background: var(--surface);
+}
+button, .btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4em;
+  padding: 0 1rem;
+  cursor: pointer;
+  text-decoration: none;
+  color: var(--ink);
+}
+button:hover, .btn:hover { border-color: var(--ink-faint); }
+button[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+.btn-primary { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+.btn-quiet { background: none; border-color: transparent; color: var(--ink-soft); }
+
+/* ---------- site header ---------- */
+
+.site-header {
+  display: flex;
+  align-items: baseline;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  padding: 1.75rem 0 1rem;
+}
+.site-title { font-size: 1.6rem; }
+.site-title a { color: inherit; text-decoration: none; }
+.site-count { color: var(--ink-faint); font-size: 0.875rem; }
+.site-header .offline { margin-left: auto; min-height: 36px; font-size: 0.8125rem; padding: 0 0.75rem; }
+
+/* ---------- search and facets ---------- */
+
+.controls {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: color-mix(in srgb, var(--bg) 92%, transparent);
+  backdrop-filter: blur(8px);
+  padding: 0.5rem 0;
+  margin: 0 -0.25rem;
+}
+.search-row { display: flex; gap: 0.5rem; padding: 0 0.25rem; }
+.search {
+  flex: 1;
+  padding: 0 0.875rem;
+  background: var(--surface);
+  box-shadow: var(--shadow);
+  border-color: transparent;
+}
+.search::-webkit-search-cancel-button { cursor: pointer; }
+.filters-toggle { flex: 0 0 auto; box-shadow: var(--shadow); border-color: transparent; }
+.filters-toggle .count { font-variant-numeric: tabular-nums; }
+
+.facets {
+  display: grid;
+  gap: 1rem;
+  margin: 0.5rem 0.25rem 0;
+  padding: 1rem;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+}
+.facet { border: 0; margin: 0; padding: 0; }
+.facet > legend, .facet > .facet-label {
+  padding: 0 0 0.4rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+}
+.chips { display: flex; flex-wrap: wrap; gap: 0.375rem; }
+.chip {
+  min-height: 34px;
+  padding: 0 0.7rem;
+  font-size: 0.8125rem;
+  border-radius: 999px;
+  background: var(--surface-sunk);
+  border-color: transparent;
+}
+.chip[aria-pressed="true"] { background: var(--accent); color: var(--accent-ink); }
+
+.slider-row { display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 0.75rem; }
+.slider-row input[type="range"] { min-height: var(--tap); width: 100%; border: 0; background: none; accent-color: var(--accent); }
+.slider-row output { font-variant-numeric: tabular-nums; font-size: 0.875rem; color: var(--ink-soft); min-width: 6.5em; text-align: right; }
+
+.facet-row { display: flex; gap: 0.5rem; align-items: center; }
+.facet-row select { flex: 1; padding: 0 0.5rem; }
+
+.result-count { padding: 0.875rem 0.25rem 0.5rem; font-size: 0.8125rem; color: var(--ink-faint); }
+
+/* ---------- recipe cards ---------- */
+
+.cards { display: grid; gap: 0.875rem; }
+
+.card { background: var(--surface); border-radius: var(--radius); box-shadow: var(--shadow); overflow: hidden; }
+.card-link { display: grid; grid-template-columns: 96px 1fr; text-decoration: none; color: inherit; }
+/* On a phone the media is a fixed-width column beside the text, so it stretches to
+ * whatever the text needs. It only becomes a fixed-ratio banner once the card goes
+ * full width at the first breakpoint. */
+.card-media { background: var(--surface-sunk); height: 100%; min-height: 96px; overflow: hidden; }
+.card-media img { width: 100%; height: 100%; object-fit: cover; }
+.card-placeholder {
+  display: grid;
+  place-items: center;
+  height: 100%;
+  font-family: var(--serif);
+  font-size: 1.75rem;
+  color: var(--accent);
+  background: var(--accent-soft);
+}
+.card-body { padding: 0.75rem 0.875rem; display: grid; gap: 0.3rem; align-content: start; }
+.card-title { font-size: 1.0625rem; }
+.card-desc {
+  color: var(--ink-soft);
+  font-size: 0.875rem;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.card-meta { display: flex; flex-wrap: wrap; gap: 0.5rem; font-size: 0.75rem; color: var(--ink-faint); font-variant-numeric: tabular-nums; }
+.card-meta li { display: flex; align-items: center; gap: 0.25rem; }
+.card-meta li + li::before { content: ""; width: 3px; height: 3px; border-radius: 50%; background: currentColor; margin-right: 0.25rem; }
+
+.empty { padding: 3rem 1rem; text-align: center; color: var(--ink-soft); }
+
+.site-footer { padding: 2.5rem 0.25rem 0; color: var(--ink-faint); font-size: 0.8125rem; }
+
+@media (min-width: 40rem) {
+  body { padding-left: max(1.5rem, env(safe-area-inset-left)); padding-right: max(1.5rem, env(safe-area-inset-right)); }
+  h1 { font-size: 2rem; }
+  .cards { grid-template-columns: repeat(2, 1fr); }
+  .card-link { grid-template-columns: 1fr; }
+  .card-media { aspect-ratio: 16 / 10; height: auto; }
+  .card-placeholder { font-size: 2.5rem; }
+  .facets { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (min-width: 64rem) {
+  .cards { grid-template-columns: repeat(3, 1fr); }
+  .facets { grid-template-columns: repeat(3, 1fr); }
+}
+
+/* ---------- recipe page ---------- */
+
+.page-recipe { max-width: 46rem; margin: 0 auto; }
+
+.back { display: inline-flex; align-items: center; gap: 0.35rem; min-height: var(--tap); font-size: 0.875rem; text-decoration: none; }
+.back::before { content: "\2190"; }
+
+.recipe-header { padding: 0.5rem 0 1.25rem; display: grid; gap: 0.6rem; }
+.recipe-header h1 { font-size: clamp(1.75rem, 6vw, 2.5rem); }
+.recipe-desc { color: var(--ink-soft); max-width: var(--measure); }
+
+.recipe-meta { display: flex; flex-wrap: wrap; gap: 0.375rem; }
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.25rem 0.6rem;
+  border-radius: 999px;
+  background: var(--surface-sunk);
+  font-size: 0.75rem;
+  color: var(--ink-soft);
+  font-variant-numeric: tabular-nums;
+}
+.pill-accent { background: var(--accent-soft); color: var(--accent); }
+
+.recipe-figure { margin: 0 0 1.5rem; }
+.recipe-figure img { width: 100%; border-radius: var(--radius); background: var(--surface-sunk); }
+.recipe-figure figcaption { padding-top: 0.5rem; font-size: 0.75rem; color: var(--ink-faint); }
+
+.section { padding: 1.5rem 0; border-top: 1px solid var(--line); }
+.section-head { display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap; margin-bottom: 0.875rem; }
+.section-head h2 { margin-right: auto; }
+
+/* ---------- nutrition ---------- */
+
+.nutrition-source { font-size: 0.8125rem; color: var(--ink-soft); margin-bottom: 0.75rem; }
+.nutrition-source .flag {
+  display: inline-block;
+  padding: 0.1rem 0.45rem;
+  margin-right: 0.4rem;
+  border-radius: 4px;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+.nutrition-source .flag[data-source="estimated"] { background: #fff3cd; color: #7a5a00; }
+@media (prefers-color-scheme: dark) {
+  .nutrition-source .flag[data-source="estimated"] { background: #3a2f10; color: #f0cf6b; }
+}
+
+.nutrition-table { width: 100%; border-collapse: collapse; font-size: 0.875rem; }
+.nutrition-table th, .nutrition-table td { padding: 0.45rem 0.5rem; text-align: right; border-bottom: 1px solid var(--line); }
+.nutrition-table thead th { font-size: 0.6875rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--ink-faint); font-weight: 600; }
+.nutrition-table tbody th { text-align: left; font-weight: 400; color: var(--ink-soft); }
+.nutrition-table td { font-variant-numeric: tabular-nums; }
+.nutrition-table .sub th { padding-left: 1.5rem; color: var(--ink-faint); }
+.nutrition-assumptions { margin-top: 0.875rem; font-size: 0.8125rem; color: var(--ink-soft); }
+.nutrition-assumptions summary { cursor: pointer; min-height: 32px; display: flex; align-items: center; }
+
+/* ---------- ingredients ---------- */
+
+.scaler { display: flex; align-items: center; gap: 0.4rem; }
+.scaler-label { font-size: 0.8125rem; color: var(--ink-faint); }
+.scaler button { width: var(--tap); min-width: var(--tap); padding: 0; font-size: 1.25rem; }
+.scaler output { min-width: 3.5rem; text-align: center; font-variant-numeric: tabular-nums; font-weight: 600; }
+.scaler .reset { min-height: 32px; font-size: 0.75rem; padding: 0 0.6rem; }
+
+.ingredient-group + .ingredient-group { margin-top: 1.25rem; }
+.ingredient-group h3 { margin-bottom: 0.5rem; color: var(--ink-soft); font-size: 0.8125rem; letter-spacing: 0.05em; text-transform: uppercase; font-family: var(--sans); }
+.ingredients-list li {
+  display: flex;
+  gap: 0.5rem;
+  padding: 0.55rem 0;
+  border-bottom: 1px solid var(--line);
+}
+.ingredients-list li:last-child { border-bottom: 0; }
+.ing-amount { flex: 0 0 auto; font-variant-numeric: tabular-nums; font-weight: 600; min-width: 4.5rem; }
+.ing-note { color: var(--ink-faint); }
+
+/* ---------- method ---------- */
+
+.steps { counter-reset: step; display: grid; gap: 1rem; }
+.steps li { counter-increment: step; display: grid; grid-template-columns: 1.75rem 1fr; gap: 0.75rem; }
+.steps li::before {
+  content: counter(step);
+  grid-row: span 2;
+  width: 1.75rem;
+  height: 1.75rem;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: var(--accent-soft);
+  color: var(--accent);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+.steps p { max-width: var(--measure); }
+.step-time { font-size: 0.75rem; color: var(--ink-faint); }
+
+.notes-list { display: grid; gap: 0.6rem; }
+.notes-list li { display: grid; grid-template-columns: 1rem 1fr; gap: 0.5rem; color: var(--ink-soft); }
+.notes-list li::before { content: "\2022"; color: var(--accent); }
+
+.source-line { font-size: 0.875rem; color: var(--ink-soft); }
+
+/* ---------- cook mode ---------- */
+
+.cook {
+  border: 0;
+  padding: 0;
+  margin: 0;
+  width: 100%;
+  max-width: none;
+  height: 100%;
+  max-height: none;
+  background: var(--bg);
+  color: var(--ink);
+}
+.cook::backdrop { background: var(--bg); }
+.cook-inner {
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  height: 100dvh;
+  padding: calc(0.75rem + env(safe-area-inset-top)) 1.25rem calc(0.75rem + env(safe-area-inset-bottom));
+  gap: 1rem;
+}
+.cook-top { display: flex; align-items: center; gap: 0.75rem; }
+.cook-progress { flex: 1; font-size: 0.8125rem; color: var(--ink-faint); font-variant-numeric: tabular-nums; }
+.cook-awake { font-size: 0.6875rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--accent); }
+.cook-body { display: grid; align-content: center; gap: 1rem; overflow-y: auto; }
+.cook-step { font-family: var(--serif); font-size: clamp(1.5rem, 5.5vw, 2.25rem); line-height: 1.3; }
+.cook-step-time { color: var(--ink-faint); }
+.cook-ingredients { font-size: 0.9375rem; color: var(--ink-soft); display: grid; gap: 0.3rem; }
+.cook-nav { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; }
+.cook-nav button { min-height: 56px; font-size: 1rem; }
+.cook-done .cook-step { color: var(--ink-faint); text-decoration: line-through; }
+
+/* ---------- offline banner ---------- */
+
+.toast {
+  position: fixed;
+  left: 50%;
+  bottom: calc(1rem + env(safe-area-inset-bottom));
+  transform: translateX(-50%);
+  z-index: 50;
+  max-width: calc(100vw - 2rem);
+  padding: 0.7rem 1rem;
+  border-radius: 999px;
+  background: var(--ink);
+  color: var(--bg);
+  font-size: 0.875rem;
+  box-shadow: var(--shadow);
+}
+
+/* ---------- motion ---------- */
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+}
+
+/* ---------- print ----------
+ * A recipe should print as a recipe: one column, black on white, no chrome, and the
+ * ingredients and method kept together where the page break allows. */
+
+@media print {
+  :root {
+    --bg: #fff; --surface: #fff; --surface-sunk: #fff;
+    --ink: #000; --ink-soft: #333; --ink-faint: #555;
+    --line: #bbb; --accent: #000; --accent-soft: #eee; --shadow: none;
+  }
+  body { padding: 0; font-size: 11pt; }
+  .page-recipe { max-width: none; }
+  .controls, .site-header .offline, .back, .scaler, .cook, .toast,
+  .section-head button, .nutrition-assumptions summary { display: none !important; }
+  .nutrition-assumptions[open] p { display: block; }
+  .recipe-figure { max-width: 9cm; }
+  .section { break-inside: avoid; border-top: 1px solid #bbb; }
+  .steps li, .ingredient-group { break-inside: avoid; }
+  a { text-decoration: none; color: #000; }
+  .recipe-header h1 { font-size: 20pt; }
+}

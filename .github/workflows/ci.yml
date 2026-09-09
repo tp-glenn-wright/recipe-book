@@ -1,0 +1,71 @@
+# Gates that run on every push and pull request.
+#
+# Two deliberate choices here:
+#
+#   * Only first-party actions/* are used, each pinned to a full commit SHA rather
+#     than a tag. A tag can be moved; a SHA cannot. With no npm dependencies, Actions
+#     is the only third-party code in this pipeline, so it is where the pinning matters.
+#   * No setup-node. The runner already ships a current Node, and skipping the action
+#     removes one more moving part from the supply chain.
+
+name: CI
+
+# main is deliberately absent: a push there runs Deploy, which runs these same gates
+# before publishing, so there is no point running them twice.
+on:
+  push:
+    branches-ignore: [main]
+  pull_request:
+  workflow_dispatch:
+
+# Least privilege by default. Nothing in this workflow writes anything.
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Check out
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Record the toolchain
+        run: |
+          echo "node $(node --version)"
+          echo "npm  $(npm --version)"
+
+      - name: Tests
+        run: node --test tools/test.mjs
+
+      - name: Validate recipes
+        run: node tools/recipes.mjs validate
+
+      - name: Build
+        run: node tools/build.mjs
+
+      # Runs after the build so the built-output gate has something to inspect:
+      # CSP present on every page, no inline scripts or handlers, no external origins.
+      - name: Security gates
+        run: node tools/security.mjs
+
+      # Meaningful precisely because the dependency gate above keeps the tree empty.
+      # If a dependency is ever added deliberately, this starts doing real work.
+      - name: Audit dependencies
+        run: npm audit --audit-level=moderate
+
+      # dist/ is gitignored, so anything showing up here means the build touched a
+      # source file, or that a generated artefact is missing from .gitignore.
+      - name: Confirm the build left the tree clean
+        run: |
+          if [ -n "$(git status --porcelain)" ]; then
+            echo "The build modified or created files outside dist/:"
+            git status --porcelain
+            exit 1
+          fi

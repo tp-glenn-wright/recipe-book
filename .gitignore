@@ -1,0 +1,16 @@
+# Build output. Pages deploys the workflow artefact, never a committed folder.
+dist/
+
+# Node. There are no dependencies; this is here to catch accidents.
+node_modules/
+
+# macOS
+.DS_Store
+
+# Editor
+.vscode/
+.idea/
+
+# Scratch
+*.local
+tmp/

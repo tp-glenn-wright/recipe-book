@@ -1,0 +1,230 @@
+{
+  "schemaVersion": 1,
+  "id": "beef-rendang",
+  "title": "Beef Rendang",
+  "description": "A dry curry rather than a wet one. You are looking for the coconut to split and the sauce to cling to the meat, which takes longer than you think.",
+  "image": null,
+  "source": {
+    "kind": "book",
+    "citation": "Adapted from Sri Owen, Indonesian Regional Food and Cookery",
+    "url": null
+  },
+  "added": "2026-09-08",
+  "updated": "2026-09-08",
+  "cuisine": "Indonesian",
+  "course": [
+    "main",
+    "dinner"
+  ],
+  "mainProtein": "beef",
+  "tags": [
+    "slow-cook",
+    "spicy",
+    "gluten-free",
+    "make-ahead",
+    "freezer-friendly",
+    "one-pot"
+  ],
+  "rating": 5,
+  "difficulty": "medium",
+  "prepMinutes": 30,
+  "cookMinutes": 180,
+  "totalMinutes": 210,
+  "servings": 6,
+  "servingSizeG": 250,
+  "equipment": [
+    "heavy casserole",
+    "blender",
+    "small frying pan"
+  ],
+  "ingredients": [
+    {
+      "group": "Spice paste",
+      "items": [
+        {
+          "quantity": 6,
+          "unit": "clove",
+          "item": "garlic",
+          "note": "peeled",
+          "raw": "6 cloves garlic, peeled"
+        },
+        {
+          "quantity": 8,
+          "unit": null,
+          "item": "shallots",
+          "note": "peeled and halved",
+          "raw": "8 shallots, peeled and halved"
+        },
+        {
+          "quantity": 6,
+          "unit": null,
+          "item": "dried long red chillies",
+          "note": "soaked in hot water for 20 minutes",
+          "raw": "6 dried long red chillies, soaked"
+        },
+        {
+          "quantity": 30,
+          "unit": "g",
+          "item": "fresh ginger",
+          "note": "peeled",
+          "raw": "30 g fresh ginger, peeled"
+        },
+        {
+          "quantity": 30,
+          "unit": "g",
+          "item": "galangal",
+          "note": "peeled",
+          "raw": "30 g galangal, peeled"
+        },
+        {
+          "quantity": 2,
+          "unit": "stalk",
+          "item": "lemongrass",
+          "note": "tough outer layers removed, chopped",
+          "raw": "2 stalks lemongrass, trimmed and chopped"
+        },
+        {
+          "quantity": 1,
+          "unit": "tsp",
+          "item": "ground turmeric",
+          "note": null,
+          "raw": "1 tsp ground turmeric"
+        }
+      ]
+    },
+    {
+      "group": "The braise",
+      "items": [
+        {
+          "quantity": 1200,
+          "unit": "g",
+          "item": "beef chuck",
+          "note": "cut into 4 cm cubes",
+          "raw": "1.2 kg beef chuck, cut into 4 cm cubes"
+        },
+        {
+          "quantity": 400,
+          "unit": "ml",
+          "item": "coconut cream",
+          "note": null,
+          "raw": "1 tin (400 ml) coconut cream"
+        },
+        {
+          "quantity": 400,
+          "unit": "ml",
+          "item": "coconut milk",
+          "note": null,
+          "raw": "1 tin (400 ml) coconut milk"
+        },
+        {
+          "quantity": 6,
+          "unit": null,
+          "item": "kaffir lime leaves",
+          "note": null,
+          "raw": "6 kaffir lime leaves"
+        },
+        {
+          "quantity": 1,
+          "unit": null,
+          "item": "cinnamon quill",
+          "note": null,
+          "raw": "1 cinnamon quill"
+        },
+        {
+          "quantity": 2,
+          "unit": "tbsp",
+          "item": "tamarind paste",
+          "note": null,
+          "raw": "2 tbsp tamarind paste"
+        },
+        {
+          "quantity": 15,
+          "unit": "g",
+          "item": "palm sugar",
+          "note": "grated",
+          "raw": "15 g palm sugar, grated"
+        },
+        {
+          "quantity": 2,
+          "unit": "tsp",
+          "item": "sea salt",
+          "note": null,
+          "raw": "2 tsp sea salt"
+        }
+      ]
+    },
+    {
+      "group": "To finish",
+      "items": [
+        {
+          "quantity": 100,
+          "unit": "g",
+          "item": "desiccated coconut",
+          "note": "for the kerisik",
+          "raw": "100 g desiccated coconut, for the kerisik"
+        }
+      ]
+    }
+  ],
+  "steps": [
+    {
+      "text": "Blitz all the spice paste ingredients to a smooth puree, adding a splash of the coconut milk if the blender needs help.",
+      "minutes": 10
+    },
+    {
+      "text": "Toast the desiccated coconut in a dry frying pan over a medium heat, stirring constantly, until it is a deep nutty brown. Pound or blitz it to a coarse paste. This is the kerisik and it is what gives rendang its body.",
+      "minutes": 12
+    },
+    {
+      "text": "Fry the spice paste in the casserole over a medium heat until it darkens and stops smelling raw, around eight minutes.",
+      "minutes": 8
+    },
+    {
+      "text": "Add the beef and turn it in the paste until every piece is coated.",
+      "minutes": 3
+    },
+    {
+      "text": "Pour in both tins of coconut, add the lime leaves, cinnamon, tamarind, palm sugar and salt. Bring to a bare simmer.",
+      "minutes": 5
+    },
+    {
+      "text": "Cook uncovered at the gentlest simmer for two to two and a half hours, stirring every twenty minutes or so. The liquid should reduce steadily and the oil will eventually separate out.",
+      "minutes": 150
+    },
+    {
+      "text": "Stir in the kerisik and keep cooking until the sauce is dark, thick and clinging to the meat rather than pooling around it. Taste for salt and tamarind.",
+      "minutes": 20
+    }
+  ],
+  "notes": [
+    "Better on the second day, and it freezes well for three months.",
+    "If it looks like drying out before the beef is tender, add a splash of water rather than more coconut.",
+    "Sample recipe that came with the site. Delete it once your own recipes are in."
+  ],
+  "nutrition": {
+    "source": "estimated",
+    "assumptions": "Estimated from ingredient composition. 1.2 kg raw chuck plus coconut reducing to roughly 1.5 kg finished, divided into six 250 g servings. Salt as listed, which is most of the sodium.",
+    "perServing": {
+      "kj": 2100,
+      "kcal": 502,
+      "proteinG": 34,
+      "fatG": 32,
+      "saturatedFatG": 18,
+      "carbsG": 12,
+      "sugarsG": 6,
+      "fibreG": 3,
+      "sodiumMg": 620
+    },
+    "per100g": {
+      "kj": 840,
+      "kcal": 201,
+      "proteinG": 13.6,
+      "fatG": 12.8,
+      "saturatedFatG": 7.2,
+      "carbsG": 4.8,
+      "sugarsG": 2.4,
+      "fibreG": 1.2,
+      "sodiumMg": 248
+    }
+  }
+}

@@ -1,0 +1,16 @@
+# With no npm dependencies, GitHub Actions is the only supply chain in this repo.
+# Actions are pinned to commit SHAs, so this is what proposes moving those pins
+# deliberately rather than letting them drift or sit stale.
+version: 2
+updates:
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+    commit-message:
+      prefix: ci
+    labels:
+      - dependencies
+    groups:
+      actions:
+        patterns: ['*']

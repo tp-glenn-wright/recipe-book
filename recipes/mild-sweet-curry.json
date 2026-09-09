@@ -1,0 +1,82 @@
+{
+  "schemaVersion": 1,
+  "id": "mild-sweet-curry",
+  "title": "Mild Sweet Curry",
+  "description": "A low-fat curry that gets its sweetness from sultanas and apple rather than sugar, and its body from cornflour and evaporated milk rather than coconut cream. Keep the heat down once the milk goes in or it will split.",
+  "image": null,
+  "source": { "kind": "photo", "citation": null, "url": null },
+  "added": "2026-09-09",
+  "updated": "2026-09-09",
+  "cuisine": "New Zealand",
+  "course": ["main", "dinner"],
+  "mainProtein": "beef",
+  "tags": ["weeknight", "high-protein", "kids", "stovetop"],
+  "rating": null,
+  "difficulty": "easy",
+  "prepMinutes": 20,
+  "cookMinutes": 25,
+  "totalMinutes": 45,
+  "servings": 6,
+  "servingSizeG": 320,
+  "equipment": ["non-stick frying pan", "microwave", "microwave-safe dish"],
+  "ingredients": [
+    {
+      "group": "Vegetables",
+      "items": [
+        { "quantity": 1, "unit": "cup", "item": "carrots", "note": "sliced", "raw": "1 cup sliced carrots" },
+        { "quantity": 1, "unit": "cup", "item": "onion", "note": "sliced", "raw": "1 cup sliced onion" },
+        { "quantity": 1, "unit": "cup", "item": "celery", "note": "sliced", "raw": "1 cup sliced celery" },
+        { "quantity": 0.5, "unit": "cup", "item": "red capsicum", "note": "sliced", "raw": "1/2 cup red capsicum, sliced" },
+        { "quantity": 0.5, "unit": "cup", "item": "green capsicum", "note": "sliced", "raw": "1/2 cup green capsicum, sliced" },
+        { "quantity": 1, "unit": "cup", "item": "small yellow squash", "note": "quartered, 4 to 5 whole", "raw": "1 cup quartered small yellow squash (4-5 whole)" },
+        { "quantity": 375, "unit": "ml", "item": "water", "note": null, "raw": "1 1/2 cups water" }
+      ]
+    },
+    {
+      "group": "Meat and spices",
+      "items": [
+        { "quantity": null, "unit": null, "item": "cooking spray", "note": null, "raw": "cooking spray" },
+        { "quantity": 600, "unit": "g", "item": "very lean rump steak", "note": "diced", "raw": "600 g very lean rump steak, diced" },
+        { "quantity": 2, "unit": "tsp", "item": "fresh ginger", "note": "finely chopped", "raw": "2 teaspoons ginger, finely chopped" },
+        { "quantity": 1, "unit": "tsp", "item": "ground coriander", "note": null, "raw": "1 teaspoon coriander" },
+        { "quantity": 1, "unit": "tsp", "item": "ground cumin", "note": null, "raw": "1 teaspoon cumin" },
+        { "quantity": 1, "unit": "tsp", "item": "ground turmeric", "note": null, "raw": "1 teaspoon turmeric" },
+        { "quantity": 1, "unit": "tsp", "item": "sweet paprika", "note": null, "raw": "1 teaspoon sweet paprika" },
+        { "quantity": 0.25, "unit": "tsp", "item": "chilli powder", "note": "or to taste", "raw": "1/4 teaspoon chilli powder (or to taste)" },
+        { "quantity": 2, "unit": "tsp", "item": "beef stock powder", "note": null, "raw": "2 teaspoons beef stock powder" }
+      ]
+    },
+    {
+      "group": "To finish",
+      "items": [
+        { "quantity": 0.5, "unit": "cup", "item": "sultanas", "note": null, "raw": "1/2 cup sultanas" },
+        { "quantity": 1, "unit": "cup", "item": "apple", "note": "peeled and diced", "raw": "1 cup peeled apple, diced" },
+        { "quantity": 2, "unit": "tbsp", "item": "cornflour", "note": "heaped", "raw": "2 heaped tablespoons cornflour" },
+        { "quantity": 1, "unit": "tsp", "item": "imitation coconut essence", "note": null, "raw": "1 teaspoon imitation coconut essence" },
+        { "quantity": 375, "unit": "ml", "item": "evaporated light milk", "note": null, "raw": "1 x 375 ml can evaporated light milk" }
+      ]
+    }
+  ],
+  "steps": [
+    { "text": "Microwave the carrot, onion, celery, capsicums and squash on high with the water for 8 minutes.", "minutes": 8 },
+    { "text": "Coat a non-stick frying pan with cooking spray and brown the diced rump for 5 minutes, then drain off the excess liquid.", "minutes": 5 },
+    { "text": "Add the ginger to the meat and cook for a further minute.", "minutes": 1 },
+    { "text": "Add the coriander, cumin, turmeric, paprika and chilli powder and cook for one minute, until the spices stop smelling raw.", "minutes": 1 },
+    { "text": "Drain the vegetables, keeping a cup of the cooking liquid.", "minutes": null },
+    { "text": "Dissolve the stock powder in the reserved cooking liquid, add it to the pan with the sultanas and apple, and cook for two minutes.", "minutes": 2 },
+    { "text": "Add the vegetables, reduce the heat, cover and simmer for five minutes.", "minutes": 5 },
+    { "text": "Blend the cornflour, coconut essence and evaporated milk until smooth, stir it into the pan and heat until it thickens. Keep it below a boil, or the milk will split and the cornflour will go stringy.", "minutes": 3 },
+    { "text": "Serve with boiled rice, potatoes or pasta.", "minutes": null }
+  ],
+  "notes": [
+    "The source offers very lean lamb leg steaks or skinless chicken breast in place of the rump, and the nutrition barely moves: 1131 kJ a serve for the lamb and 1128 for the chicken, against 1186 for the rump.",
+    "Mild is the point, so it is genuinely mild. If you want it to bite, take the chilli powder up rather than adding anything else, because the sweetness will swallow most other heat.",
+    "The evaporated milk and cornflour stand in for coconut cream, which is where the low saturated fat comes from. Real coconut cream would taste better and take the saturated fat from under 2 g a serve to somewhere north of 15 g."
+  ],
+  "nutrition": {
+    "source": "label",
+    "assumptions": "Read off the printed panel, rump column. The panel gives 1186 kJ and 275 cal a serve, which do not agree with each other; the kJ figure is kept and the kcal derived from it, since NZ panels are kJ-primary and 1186 kJ matches the panel's own macros under the 17/17/37 convention. Serving size of 320 g is worked out from the ingredient masses, not stated on the page: roughly 2150 g of ingredients reducing about 10% to 1.94 kg, over six servings. The panel gives no per-100 g column, so those figures are the per-serve numbers divided by 3.2.",
+    "perServing": { "kj": 1186, "kcal": 284, "proteinG": 30.2, "fatG": 4.1, "saturatedFatG": 1.8, "carbsG": 29.6, "sugarsG": 25.2, "fibreG": 3.2, "sodiumMg": 269 },
+    "per100g": { "kj": 371, "kcal": 88.8, "proteinG": 9.4, "fatG": 1.3, "saturatedFatG": 0.56, "carbsG": 9.3, "sugarsG": 7.9, "fibreG": 1, "sodiumMg": 84 }
+  }
+}
