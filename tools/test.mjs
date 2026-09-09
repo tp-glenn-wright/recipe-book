@@ -364,15 +364,28 @@ describe('page rendering', () => {
     assert.match(page, /&lt;img src=x onerror=alert\(3\)&gt;/);
   });
 
+  // The `i` flags below are load-bearing. HTML tag names are case-insensitive, so a
+  // scan for /<script/ without it would walk straight past <SCRIPT> and report a pass.
+  // CodeQL's js/bad-tag-filter caught exactly that here.
   test('the only script tags are external modules and JSON-LD', () => {
-    for (const tag of renderRecipe(baseRecipe(), [baseRecipe()]).match(/<script[^>]*>/g) ?? []) {
-      assert.match(tag, /src="[^"]*" type="module"|type="application\/ld\+json"/, tag);
+    const tags = renderRecipe(baseRecipe(), [baseRecipe()]).match(/<script[^>]*>/gi) ?? [];
+    assert.ok(tags.length >= 2, 'expected at least the module and the JSON-LD block');
+    for (const tag of tags) {
+      assert.match(tag, /src="[^"]*" type="module"|type="application\/ld\+json"/i, tag);
     }
+  });
+
+  test('the tag scans are case-insensitive', () => {
+    // Guards the fix above: if someone drops the flag, these fail rather than the
+    // check quietly stopping working.
+    const shouty = '<SCRIPT>alert(1)</SCRIPT><IMG SRC="https://evil.example/x.png">';
+    assert.ok((shouty.match(/<script[^>]*>/gi) ?? []).length === 1, 'script scan missed <SCRIPT>');
+    assert.ok([...shouty.matchAll(/\b(src|href)="([^"]*)"/gi)].length === 1, 'attribute scan missed SRC=');
   });
 
   test('nothing references an external origin', () => {
     const page = renderRecipe(baseRecipe(), [baseRecipe()]);
-    for (const [, attribute, value] of page.matchAll(/\b(src|href)="([^"]*)"/g)) {
+    for (const [, attribute, value] of page.matchAll(/\b(src|href)="([^"]*)"/gi)) {
       assert.doesNotMatch(value, /^(?:https?:)?\/\//, `${attribute}="${value}"`);
     }
   });

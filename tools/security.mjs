@@ -167,7 +167,7 @@ async function imageMetadataGate() {
 }
 
 // Only two shapes are allowed: an external module, and a JSON-LD data block.
-const ALLOWED_SCRIPT = /^<script(?:\s+src="[^"]*"|\s+type="(?:module|application\/ld\+json)"|\s+defer|\s+async|\s+crossorigin)*\s*>$/;
+const ALLOWED_SCRIPT = /^<script(?:\s+src="[^"]*"|\s+type="(?:module|application\/ld\+json)"|\s+defer|\s+async|\s+crossorigin)*\s*>$/i;
 
 async function builtOutputGate() {
   const failures = [];
